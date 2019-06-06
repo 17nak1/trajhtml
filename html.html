@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Trajectory Matching</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/2.0.0/handsontable.min.css">
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+</head>
+<body>
+<body onload="start()">
+  <div id="banner">
+    <div class="authors">
+      <h1 id="header">Trajectory Matching</h1>
+    </div>
+    <hr>
+  </div>
+  <div id="spacer" style="margin-top: 130px"></div>   
+  <br>
+<div class="container">
+  <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to
+assess the relative merits of alternative models as explanations of the data. 
+
+    A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) differs from previous approaches.</p>
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+    <li><a data-toggle="tab" href="#model">Model</a></li>
+    <li><a data-toggle="tab" href="#sobol">Sobol</a></li>
+    <li><a data-toggle="tab" href="#refinements">Refinements</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>What is trajectory matching?</h3>
+      <p>
+This function attempts to match trajectories of a model's deterministic to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
+Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data.
+
+    </div>
+    <div id="model" class="tab-pane fade">
+      <div id="table">
+            <table id="table1">
+               <tr>
+                <td >Model parameters' name</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="text" value=' ' ></td>
+                <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="variable"> States names</td>
+                <div>
+                  <td ><input id= valInp style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
+                  <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+                </div>
+              </tr>
+              <tr>
+                <td class="variable"> Zero name(s)</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="text" value='H' ></td>
+                <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="variable"> Time step</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="number" value="0.00273972602" ></td>
+              </tr>
+            </table>
+          </div>
+    </div>
+    <div id="sobol" class="tab-pane fade">
+      <div id="table">
+      <table id="table1">
+        </tr> 
+        <tr>
+          <td title = 'Lower and upper bounds' class="variable">Lower and upper bound of each parametrs</td>
+          <td>
+          <label class="switch"> 
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+        </td>
+        </tr>          
+        <tr>
+          <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
+          <td >
+            <input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="10">
+          </td>
+        </tr>
+        <tr>
+          <td title = 'Positive numeric scalar; particles with log likelihood below "tol" will be discarded.' class="variable"> tolarence </td>
+          <td>
+            <input id= valInp style="width:100px; border: 0; text-align: center;" type="number"  value="1e-17"> 
+          </td>
+        </tr>
+      </table>
+    </div>
+    </div>
+    <div id="refinements" class="tab-pane fade">
+      <button style="background-color:#deeaee;width: 100%" class="accordion">R0</button>
+        <div class="panel">
+        </div>
+        <button style="background-color:#deeaee;width: 100%" class="accordion">Amplitude</button>
+        <div class="panel">
+        </div>
+        <button style="background-color:#deeaee;width: 100%" class="accordion">Mu</button>
+        <div class="panel">
+        </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
