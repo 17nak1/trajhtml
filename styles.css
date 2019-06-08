@@ -44,6 +44,7 @@ table#table {
 table#table , table#th, table#td{
   border: 1px solid black;
 }
+
 div#table{
   margin: 4px 10% 4px 10%;
   padding: 4px 4px;
@@ -56,7 +57,9 @@ div#table th, div#table td {
   padding: 4px 4px;
   text-align: center;
 }
-
+table#td{
+  padding-left: 5px; 
+}
 .row {
   display: flex;
   justify-content: center;
@@ -94,9 +97,10 @@ section#step {
 div#step {
   display: inline-block;
 }
-/*div#button {
-  margin: 0 20px 0 20px;
-}*/
+div#button {
+  text-align: center;
+  margin: 0 20px 0 200px;
+}
 div#data {
   width: calc(100% - 612px);
 }
@@ -249,6 +253,7 @@ h3#answer{
   outline: none;
   font-size: 15px;
   transition: 0.4s;
+  display = "none"
 }
 
 .active, .accordion:hover {
@@ -258,7 +263,7 @@ h3#answer{
 .panel {
   padding: 10 10px;
   background-color: white;
-  max-height: 0;
+  max-height: 1000p;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   margin: 1px 10% 1px 10%;

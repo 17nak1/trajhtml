@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trajectory Matching</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/2.0.0/handsontable.min.css">
+  <!-- <script src="./bundle.js"></script> -->
+  <script src="./Magic.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+  <link rel="stylesheet" type="text/css" href="./styles.css">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+</head>
+<body onload="start()">
+  <div id="banner">
+    <div class="authors">
+      <h1 id="header">Trajectory Matching</h1>
+    </div>
+    <hr>
+  </div>
+  <div id="spacer" style="margin-top: 130px"></div>   
+</div>
+  <br>
+  <section id="setup">
+    <div id="setup">
+      <button style="background-color:#deeaee;width: 100%" class="accordion">Model Snippet</button>
+        <div class="panel">
+          <div id="table">
+            <table id="table1">
+               <tr>
+                <td >Model parameters' name</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="text" value=' ' ></td>
+                <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="variable"> States names</td>
+                <div>
+                  <td ><input id= valInp style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
+                  <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+                </div>
+              </tr>
+              <tr>
+                <td class="variable"> Zero name(s)</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="text" value='H' ></td>
+                <td >
+                <input id= 'addbutton' type="button" value="Add" >
+                <span id="fooBar">&nbsp;</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="variable"> Time step</td>
+                <td ><input id= valInp style="width:100%;border: 0" type="number" value="0.00273972602" ></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <br>
+        <button style="background-color:#b1cbbb" class="accordion">Generate Sobol</button>
+          <div class="panel">
+            <div id="table">
+              <table id="table2">
+                </tr> 
+                <tr>
+                  <td title = 'Lower and upper bound of each parametrs' class="variable">save states</td>
+                  <td>
+                 <label class="switch"> 
+                   <input type="checkbox">
+                   <span class="slider round"></span>
+                 </label>
+                </td>
+                </tr>          
+                <tr>
+                  <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
+                  <td >
+                    <input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="10">
+                  </td>
+                </tr>
+                <tr>
+                  <td title = 'Positive numeric scalar; particles with log likelihood below "tol" will be discarded.' class="variable"> tolarence </td>
+                  <td>
+                    <input id= valInp style="width:100px; border: 0; text-align: center;" type="number"  value="1e-17"> 
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <td title = 'Integer; the maximum number of filtering failures allowed. 'class="variable"> max.fail</td>
+                  <td>
+                    <input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="300">
+                  </td>
+                </tr>
+                <tr> 
+                  <td title = 'logical; if true, the prediction means are calculated for the state variables and parameters.' class="variable">prediction mean</td>
+                  <td>
+                    <label class="switch"> 
+                      <input type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                </tr>
+                <tr>
+                  <td title = 'Logical; if true, the prediction variances are calculated for the state variables and parameters.'class="variable">prediction variance</td>
+                  <td>
+                    <label class="switch"> 
+                      <input type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                </tr> -->
+                <!-- <tr>
+                  <td title = 'Logical; if true, the filtering means are calculated for the state variables and parameters.' class="variable"> filter mean</td>
+                  <td>
+                    <label class="switch"> 
+                      <input type="checkbox">
+                      <span class="slider round"></span>
+                    </label>
+                  </td>
+                </tr> 
+                <tr>
+                  <td title = 'Logical; if true, the state-vector for each particle is saved and returned.' class="variable">save states</td>
+                  <td>
+                 <label class="switch"> 
+                   <input type="checkbox">
+                   <span class="slider round"></span>
+                 </label>
+                </td>
+                </tr>            -->
+              </table>
+          </div>
+        </div>
+        <button style="background-color:#eea29a" class="accordion">Upload data</button>
+      <div class="panel" >
+        <section id="upload">
+          <div id= "upload">
+            <label id = "label-file1" for="file1-upload" >
+            Data covariates
+            </label>
+            <input id="file1-upload" type="file" >
+          </div>
+          <div id= "upload">
+            <label id = "label-file2" for="file2-upload"  >
+            Data cases
+            </label>
+            <input id="file2-upload" type="file" >
+          </div>
+          <div id= "upload">
+            <label id = "label-file3" for="file3-upload" >
+            Initial parameters
+            </label>
+            <input  id="file3-upload" type="file" >
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section id="step">
+    <div >
+      <button  class = "custom-button" style="margin: 0 20px 0 20px;background-color: #f7786b" id="calc">Compute</button>
+      <button id="download" style="background-color:#D3D3D3 " disabled="true">Download Results</button> 
+    </div>
+  </section>
+</body>
+</html>

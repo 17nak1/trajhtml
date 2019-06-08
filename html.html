@@ -7,9 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="./styles.css">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/2.0.0/handsontable.min.css">
-  
+  <script src="./Magic.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
   <link rel="stylesheet" type="text/css" href="./styles.css">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
@@ -25,16 +23,16 @@
   <div id="spacer" style="margin-top: 130px"></div>   
   <br>
 <div class="container">
-  <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to
-assess the relative merits of alternative models as explanations of the data. 
+  <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
 
-    A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) differs from previous approaches.</p>
+    <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
 
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
     <li><a data-toggle="tab" href="#model">Model</a></li>
     <li><a data-toggle="tab" href="#sobol">Sobol</a></li>
     <li><a data-toggle="tab" href="#refinements">Refinements</a></li>
+    <li><a data-toggle="tab" href="#combine">Combine and generate</a></li>
   </ul>
 
   <div class="tab-content">
@@ -42,7 +40,7 @@ assess the relative merits of alternative models as explanations of the data.
       <h3>What is trajectory matching?</h3>
       <p>
 This function attempts to match trajectories of a model's deterministic to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
-Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data.
+<!-- Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data. -->
 
     </div>
     <div id="model" class="tab-pane fade">
@@ -50,33 +48,33 @@ Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skelet
             <table id="table1">
                <tr>
                 <td >Model parameters' name</td>
-                <td ><input id= valInp style="width:100%;border: 0" type="text" value=' ' ></td>
-                <td >
+                <td style="width: 400px"><input id= modelParameter style="width:100%;border: 0" type="text" value=' R0, amplitude, gamma, mu, sigma, rho ,psi' ></td>
+                <!-- <td >
                 <input id= 'addbutton' type="button" value="Add" >
                 <span id="fooBar">&nbsp;</span>
-                </td>
+                </td> -->
               </tr>
               <tr>
                 <td class="variable"> States names</td>
                 <div>
-                  <td ><input id= valInp style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
-                  <td >
+                  <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
+                  <!-- <td >
                 <input id= 'addbutton' type="button" value="Add" >
                 <span id="fooBar">&nbsp;</span>
-                </td>
+                </td> -->
                 </div>
               </tr>
               <tr>
                 <td class="variable"> Zero name(s)</td>
-                <td ><input id= valInp style="width:100%;border: 0" type="text" value='H' ></td>
-                <td >
+                <td ><input id= zeroName style="width:100%;border: 0" type="text" value='H' ></td>
+               <!--  <td >
                 <input id= 'addbutton' type="button" value="Add" >
                 <span id="fooBar">&nbsp;</span>
-                </td>
+                </td> -->
               </tr>
               <tr>
                 <td class="variable"> Time step</td>
-                <td ><input id= valInp style="width:100%;border: 0" type="number" value="0.00273972602" ></td>
+                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.00273972602" ></td>
               </tr>
             </table>
           </div>
@@ -86,18 +84,71 @@ Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skelet
       <table id="table1">
         </tr> 
         <tr>
-          <td title = 'Lower and upper bounds' class="variable">Lower and upper bound of each parametrs</td>
+          <td title = 'parameterBound' class="variable">Lower and upper bounds</td>
           <td>
-          <label class="switch"> 
-            <input type="checkbox">
-            <span class="slider round"></span>
-          </label>
+          <table id = sobolBound>
+            <tr>
+              <td > R0</td>
+              <td > <input type="number" value="0"></td>
+              <td> <input type="number" value="200"></td>
+            </tr>
+            <tr>
+              <td> amplitude</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1"></td>
+            </tr>
+            <tr>
+              <td>gamma</td>
+              <td> <input type="number" value="73.05"></td>
+              <td> <input type="number" value="73.05"></td>
+            </tr>
+            <tr>
+              <td>mu</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1"></td>
+            </tr>
+            <tr>
+              <td>sigma</td>
+              <td> <input type="number" value="45.66"></td>
+              <td> <input type="number" value="45.66"></td>
+            </tr>
+            <tr>
+              <td>rho</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1"></td>
+            </tr>
+            <tr>
+              <td>psi</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1"></td>
+            </tr>
+            <tr>
+              <td>S_0</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="0.1"></td>
+            </tr>
+            <tr>
+              <td>E_0</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1e-4"></td>
+            </tr>
+            <tr>
+              <td>I_0</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="1e-4"></td>
+            </tr>
+            <tr>
+              <td>R_0</td>
+              <td> <input type="number" value="0"></td>
+              <td> <input type="number" value="0.9"></td>
+            </tr>
+          </table>
         </td>
         </tr>          
         <tr>
           <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
           <td >
-            <input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="10">
+            <input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="2000">
           </td>
         </tr>
         <tr>
@@ -107,19 +158,61 @@ Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skelet
           </td>
         </tr>
       </table>
+      <br>
+      <div id="button"> <button>Generate & Run</button></div>
     </div>
     </div>
     <div id="refinements" class="tab-pane fade">
       <button style="background-color:#deeaee;width: 100%" class="accordion">R0</button>
+        <!-- <div class="panel"> -->
+          <table id="tableR0">
+            <tr>
+              <td>
+                log scale
+              </td>
+              <td>
+               <label class="switch"> 
+                   <input type="checkbox">
+                   <span class="slider round"></span>
+                 </label> 
+              </td>
+            </tr>
+            <tr>
+              <td>
+                parameter limits
+              </td>
+              <td>
+                <input type="number" name="param 1 limits" value="[0,1]">
+              </td>
+            </tr>
+            <tr>
+              <td>
+                flag bound
+              </td>
+              <td>
+                <label class="switch"> 
+                   <input type="checkbox">
+                   <span class="slider round"></span>
+                 </label>
+              </td>
+            </tr>
+          </table>
+          <div> <button>Run</button></div>
+        <!-- </div> -->
+        <button style="background-color:#f7786b;width: 100%" class="accordion">Amplitude</button>
         <div class="panel">
         </div>
-        <button style="background-color:#deeaee;width: 100%" class="accordion">Amplitude</button>
+        <button style="background-color:#b1cbbb;width: 100%" class="accordion">Mu</button>
         <div class="panel">
         </div>
-        <button style="background-color:#deeaee;width: 100%" class="accordion">Mu</button>
+        <button style="background-color:#eea29a;width: 100%" class="accordion">Rho</button>
         <div class="panel">
         </div>
-
+        <button style="background-color:#deeaee;width: 100%" class="accordion">Psi</button>
+        <div class="panel">
+        </div>
+    </div>
+    <div id="combine" class="tab-pane fade" >
     </div>
   </div>
 </div>
