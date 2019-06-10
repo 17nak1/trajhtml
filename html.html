@@ -30,10 +30,9 @@
 
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
-    <li><a data-toggle="tab" href="#model">Model</a></li>
+    <li><a data-toggle="tab" href="#model">Model and Data</a></li>
     <li><a data-toggle="tab" href="#sobol">Sobol</a></li>
     <li><a data-toggle="tab" href="#refinements">Refinements</a></li>
-    <li><a data-toggle="tab" href="#combine">Combine and generate</a></li>
   </ul>
   <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
@@ -191,6 +190,12 @@ This function attempts to match trajectories of a model's deterministic to data.
     </div>
 <!-- FORTH TAB -->
     <div id="refinements" class="tab-pane fade">
+      <div>
+          <label id = "label-file1" for="file1-upload" class="custom-button" style="background-color:#2ed573">
+          Upload initial points
+          </label>
+          <input id="file1-upload" type="file" style="display:none;">
+        </div>
       <button style="background-color:#deeaee;width: 100%" class="accordion">R0</button>
         <!-- <div class="panel"> -->
           <table id="tableR0">
@@ -241,8 +246,7 @@ This function attempts to match trajectories of a model's deterministic to data.
         <button style="background-color:#deeaee;width: 100%" class="accordion">Psi</button>
         <div class="panel">
         </div>
-    </div>
-    <div id="combine" class="tab-pane fade" >
+        <button>Combine</button>
     </div>
   </div>
 </div>

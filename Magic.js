@@ -1,7 +1,7 @@
 /**
  *  @file       Magic.js  
  */
-// let sobolSeq = require('./sobolSeq.js')
+let sobolSeq = require('./sobolSeq.js')
 
 var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = []
 
@@ -24,15 +24,10 @@ function start () {
         dataCovar.push(lines[line].split(','))
       }
     }
-    console.log(dataCovar)
     reader.readAsText(file)
   }
   console.log(dataCovar)
 
-  var fileChooser = document.getElementById('file2-upload')
-  fileChooser.onclick = function () {
-    this.value = ''
-  }
   document.getElementById('file2-upload').onchange = function () {
     document.getElementById('label-file2').innerHTML = 'Uploaded'
     document.getElementById('label-file2').style.backgroundColor = '#ffbf00'
@@ -47,15 +42,7 @@ function start () {
     }
     reader.readAsText(file)
   }
-  var data1 = []
-  var data2 = []
-  for (let i = 0; i < dataCovar.length - 1; i++) {
-  data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
-  data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
-  }
-  var interpolPopulation = interpolator(data1)
-  var interpolBirth = interpolator(data2)
-  console.log(dataCases)
+  
   // Second tab
   let modelp = document.getElementById('modelParameter')
   let modelParameter = modelp.value.split(',')
@@ -91,6 +78,21 @@ function start () {
   sobolButton.onclick = function () {
   
   }
+
+  let computeButton = document.querySelector('button#calc')
+  let downloadButton = document.querySelector('button#download')
+  downloadButton.style.display = 'none'
+  computeButton.onclick = function () {
+    var data1 = []
+  var data2 = []
+  for (let i = 0; i < dataCovar.length - 1; i++) {
+  data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
+  data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
+  }
+  var interpolPopulation = interpolator(data1)
+  var interpolBirth = interpolator(data2)
+  console.log(dataCases)
+}
 /////////////////////////////////////////////////////////////////////////////////
 // let computeButton = document.querySelector('button#calc')
 //   let downloadButton = document.querySelector('button#download')
