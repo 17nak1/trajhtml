@@ -41,7 +41,7 @@
 /* sobolData.js includes table of primitive polynomials and starting direction #'s generated from Fortran code 
  *  For more information please visit https://github.com/kingaa/pomp/blob/master/src/sobolSeq.c
  */
-sobolSeq = {}
+let sobolSeq = {}
 let sobolData = require('./sobolData.js');
 
 rightZero32 = function (n) {

@@ -1,7 +1,7 @@
 /**
  *  @file       Magic.js  
  */
-let sobolSeq = require('./sobolSeq.js')
+let sobolSeq = require('traj_match').sobolSeq
 var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = [], indx = Array(6).fill(0)
 
 function start () {
@@ -15,7 +15,7 @@ function start () {
     document.getElementById('label-file1').innerHTML = 'Uploaded'
     document.getElementById('label-file1').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
-    dataCovar = []
+    let dataCovar = []
     var reader = new FileReader()
     reader.onload = function () {
       var lines = this.result.split('\n')
@@ -31,7 +31,7 @@ function start () {
     document.getElementById('label-file2').innerHTML = 'Uploaded'
     document.getElementById('label-file2').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
-    dataCases = []
+    let dataCases = []
     var reader = new FileReader ()
     reader.onload = function () {
       var lines = this.result.split('\n')
