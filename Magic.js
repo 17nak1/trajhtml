@@ -34,7 +34,7 @@ function start () {
     lowerBounds.push(Number(lowerBound))
     upperBounds.push(Number(upperBound)) 
     }
-
+console.log(lowerBounds)
   
 
 //   let addbutton = document.getElementById('addbutton')
