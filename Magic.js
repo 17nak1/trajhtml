@@ -3,7 +3,7 @@
  */
 let sobolSeq = require('./sobolSeq.js')
 
-var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = []
+var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = [], indx = Array(6).fill(0)
 
 function start () {
   let req = new XMLHttpRequest()
@@ -26,7 +26,7 @@ function start () {
     }
     reader.readAsText(file)
   }
-  console.log(dataCovar)
+  
 
   document.getElementById('file2-upload').onchange = function () {
     document.getElementById('label-file2').innerHTML = 'Uploaded'
@@ -76,22 +76,26 @@ function start () {
   console.log(sobolSet)
   let sobolButton = document.getElementById('sobolButton')
   sobolButton.onclick = function () {
-  
+    var data1 = []
+    var data2 = []
+    for (let i = 0; i < dataCovar.length - 1; i++) {
+    data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
+    data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
+    }
+    var interpolPopulation = interpolator(data1)
+    var interpolBirth = interpolator(data2)
+    indx[0] = 1; indx[1] = 1; indx[3] = 1; indx[5] = 1; indx[6] = 1
+    for (let i = 0; i < sobolSet.length; i++) {
+      var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx)
+      res.push(ans)
+    }
   }
 
   let computeButton = document.querySelector('button#calc')
   let downloadButton = document.querySelector('button#download')
   downloadButton.style.display = 'none'
   computeButton.onclick = function () {
-    var data1 = []
-  var data2 = []
-  for (let i = 0; i < dataCovar.length - 1; i++) {
-  data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
-  data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
-  }
-  var interpolPopulation = interpolator(data1)
-  var interpolBirth = interpolator(data2)
-  console.log(dataCases)
+    
 }
 /////////////////////////////////////////////////////////////////////////////////
 // let computeButton = document.querySelector('button#calc')

@@ -25,7 +25,7 @@
   <br>
 <div class="container">
   <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
-
+<!-- For data analysis we neeed to identify regions of parameter space such that proposed model be consistent with the data. -->
     <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
 
   <ul class="nav nav-tabs">
@@ -38,11 +38,11 @@
     <div id="home" class="tab-pane fade in active">
       <h3>What is trajectory matching?</h3>
       <p>
-This function attempts to match trajectories of a model's deterministic to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
+This function attempts to match trajectories of a deterministic model to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
 <!-- Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data. -->
     <figure>
       <img id="coil" src="./LondonData.png">
-           <figcaption style="text-align:center">Figure 1: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1944 to 1965. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption> 
+           <figcaption style="text-align:center">Figure 1: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1945 to 1990. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption> 
     </figure>
     </div>
 <!-- SECOND TAB -->
@@ -215,9 +215,9 @@ This function attempts to match trajectories of a model's deterministic to data.
                 parameter limits
               </td>
               <td>
-                <input type="number" name="param 1 limits" value="[0,1]">
+                <input type="number" name="param 1 limits" value="0">
                 to
-                <input type="number" name="param 1 limits" value="[0,1]">
+                <input type="number" name="param 1 limits" value="1">
               </td>
             </tr>
             <tr>
