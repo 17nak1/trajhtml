@@ -1,10 +1,9 @@
 /**
  *  @file       Magic.js  
  */
+// let sobolSeq = require('./sobolSeq.js')
 
-// let pfilterCalculation = require('pfilter').pfilterCalculation
 var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = []
-var indx = new Array(12)
 
 function start () {
   let req = new XMLHttpRequest()
@@ -12,6 +11,52 @@ function start () {
   req.onload = function () {
     code = req.responseText
   }
+  // First tab
+  document.getElementById('file1-upload').onchange = function () {
+    document.getElementById('label-file1').innerHTML = 'Uploaded'
+    document.getElementById('label-file1').style.backgroundColor = '#ffbf00'
+    var file = this.files[0]
+    dataCovar = []
+    var reader = new FileReader()
+    reader.onload = function () {
+      var lines = this.result.split('\n')
+      for (var line = 1; line < lines.length; line++) {
+        dataCovar.push(lines[line].split(','))
+      }
+    }
+    console.log(dataCovar)
+    reader.readAsText(file)
+  }
+  console.log(dataCovar)
+
+  var fileChooser = document.getElementById('file2-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
+  document.getElementById('file2-upload').onchange = function () {
+    document.getElementById('label-file2').innerHTML = 'Uploaded'
+    document.getElementById('label-file2').style.backgroundColor = '#ffbf00'
+    var file = this.files[0]
+    dataCases = []
+    var reader = new FileReader ()
+    reader.onload = function () {
+      var lines = this.result.split('\n')
+      for (var line = 1; line < lines.length; line++) {
+        dataCases.push(lines[line].split(','))
+      }
+    }
+    reader.readAsText(file)
+  }
+  var data1 = []
+  var data2 = []
+  for (let i = 0; i < dataCovar.length - 1; i++) {
+  data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
+  data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
+  }
+  var interpolPopulation = interpolator(data1)
+  var interpolBirth = interpolator(data2)
+  console.log(dataCases)
+  // Second tab
   let modelp = document.getElementById('modelParameter')
   let modelParameter = modelp.value.split(',')
   
@@ -20,6 +65,9 @@ function start () {
   
   let modelz = document.getElementById('zeroName')
   let zeroName = modelz.value.split(',')
+
+  let modelt = document.getElementById('zeroName')
+  let modelt0= modelt.value
 
   let modelTimestep = document.getElementById('modelTimestep')
   let paramsInitial = modelStates
@@ -34,105 +82,75 @@ function start () {
     lowerBounds.push(Number(lowerBound))
     upperBounds.push(Number(upperBound)) 
     }
-console.log(lowerBounds)
+  let times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 2][0])];  
+  let SobolNumberOfPoints = document.getElementById('sobolPoint').value
   
-
-//   let addbutton = document.getElementById('addbutton')
-//   addbutton.onclick = function () {
-//   let setup1 = document.querySelector('#setup')
-//   let table1 = setup1.getElementById('table1')
-//   let rows = table1.querySelectorAll('tr')
-//   let row = rows[0]
-//   let cols = row.querySelectorAll('td')
-//   let cell = cols[cols.length - 2]
-//   //Create an input type dynamically.
-//   var element = cell.createElement("input");
-//   var foo = document.getElementById("fooBar");
-
-//   //Append the element in page (in span).
-//   foo.appendChild(element);
-
-// }
-  let computeButton = document.querySelector('button#calc')
-  let downloadButton = document.querySelector('button#download')
-  downloadButton.style.display = 'none'
-  computeButton.onclick = function () {
-    inputArr = [], res = []
-    computeButton.style.display = 'none'
-    downloadButton.style.display = ''
-    downloadButton.style.backgroundColor = '#D3D3D3'
-
-    let setup1 = document.querySelector('#setup')
-    let table1 = setup1.getElementById('table1')
-    let rows = table1.querySelectorAll('tr')
-    let i =1
-    // for (let i = 1; i < rows.length; i++) {
-      let row = rows[i]
-      let cols = row.querySelectorAll('td')
-      let cell = cols[cols.length - 1]
-      var input = cell.getElementById('Text1').value;
-      console.log(input)
-      // inputArr.push(input)// Read parameters from the table
-      // if (init.length) {
-      //   cell.querySelector('input#valInp').disabled = 'true'
-      //   if (i !== 12) {
-      //     cell.querySelector('input#valInp').value = ''
-      //   } 
-      // }
-    // }
-    var data1 = []
-    var data2 = []
-    for (let i = 0; i < dataCovar.length - 1; i++) {
-    data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
-    data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
-    }
-    var interpolPopulation = interpolator(data1)
-    var interpolBirth = interpolator(data2)
-
-    let times = [inputArr[11], Number(dataCases[0][0])]
-    inputArr.pop()
-    setTimeout(function () {
-      // var tem = inputArr[9]
-      // inputArr[9] = inputArr[10]
-      // inputArr[10] = tem
-      res.push(pfilterCalculation({params:inputArr, Np:100,times:times, dt:1 / 365.25,runPredMean:1,  dataCases:dataCases, interpolPop:interpolPopulation, interpolBirth:interpolBirth}))
+  let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
+  console.log(sobolSet)
+  let sobolButton = document.getElementById('sobolButton')
+  sobolButton.onclick = function () {
+  
+  }
+/////////////////////////////////////////////////////////////////////////////////
+// let computeButton = document.querySelector('button#calc')
+//   let downloadButton = document.querySelector('button#download')
+//   downloadButton.style.display = 'none'
+//   computeButton.onclick = function () {
+//     inputArr = [], res = []
+//     computeButton.style.display = 'none'
+//     downloadButton.style.display = ''
+//     downloadButton.style.backgroundColor = '#D3D3D3'
+//     let setup1 = document.querySelector('#setup')
+//     let table = setup1.querySelector('table#table')
+//     let rows = table.querySelectorAll('tr')
+//     for (let p = 0; p < indx.length; p++) {
+//       if (indx[p] === 1) {
+//         document.querySelector('#setup').querySelector('table#table').querySelectorAll('tr')[p + 1].style.backgroundColor ='#2ed573'
+//       } else {
+//         rows[p + 1].bgColor = '#FFFFFF'
+//       }
+//     }
+//     for (let i = 1; i < rows.length; i++) {
+//       let row = rows[i]
+//       let cols = row.querySelectorAll('td')
+//       let cell = cols[cols.length - 1]
+//       var input = cell.querySelector('input#valInp').value;
+//       inputArr.push(Number(input))// Read parameters from the table
+//       if (init.length) {
+//         cell.querySelector('input#valInp').disabled = 'true'
+//         if (i !== 12) {
+//           cell.querySelector('input#valInp').value = ''
+//         } 
+//       }
+//     }
+    
+    
+//     inputArr.pop()
+//     setTimeout(function () {
+//       if (init.length) {
+//         for (let i = 0; i < init[0].length - 1; i++) {
+//           var ans = traj_match(interpolPopulation, interpolBirth, dataCases, init[0][i], times, indx)
+//           res.push(ans)
+//         }
         
-      console.log(res)
-      res.splice(0, 0, ['S', 'E', 'I', 'R', 'H'])
-    }, 0)
-  }
-  var acc = document.getElementsByClassName("accordion")
-
-  for (i = 0; i < acc.length; i++) {
-    acc[i].addEventListener("click", function() {
-      this.classList.toggle("active")
-      var panel = this.nextElementSibling
-      if (panel.style.maxHeight){
-        panel.style.maxHeight = null;
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + "px"
-      } 
-    })
-  }
-  
-  downloadButton.onclick = function () {
-    Csv()
-  }
+//       } else {
+//         console.log("Error")
+//       }
+//       res.splice(0, 0, ['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik'])
+//     }, 0)
+//     setTimeout(function () {activateDownload ()})
+//   }
+//   downloadButton.onclick = function () {
+//     Csv()
+//   }
 }
 
 function Csv () {
   var csv = ''
-  
-  // Labels row
-  csv += res[0].join(',')
-  csv += '\n'
-
-  // Data rows
-  res[1].forEach(function (row) {
+  res.forEach(function (row) {
     csv += row.join(',')
     csv += '\n'
   })
-
   var hiddenElement = document.createElement('a')
 
   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv)
@@ -143,7 +161,6 @@ function activateDownload () {
   document.querySelector('button#download').disabled = false
   document.querySelector('button#download').style.backgroundColor = '#2ed573'
 }
-
 function interpolator(points) {
   var first, n = points.length - 1,
     interpolated,

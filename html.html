@@ -8,6 +8,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="./Magic.js"></script>
+  <script src="./bundle1.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
   <link rel="stylesheet" type="text/css" href="./styles.css">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
@@ -40,44 +41,71 @@
       <p>
 This function attempts to match trajectories of a model's deterministic to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
 <!-- Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data. -->
-
+    <figure>
+      <img id="coil" src="./LondonData.png">
+           <figcaption style="text-align:center">Figure 1: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1944 to 1965. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption> 
+    </figure>
     </div>
+<!-- SECOND TAB -->
     <div id="model" class="tab-pane fade">
       <div id="table">
             <table id="table1">
                <tr>
                 <td >Model parameters' name</td>
                 <td style="width: 400px"><input id= modelParameter style="width:100%;border: 0" type="text" value=' R0, amplitude, gamma, mu, sigma, rho ,psi' ></td>
-                <!-- <td >
-                <input id= 'addbutton' type="button" value="Add" >
-                <span id="fooBar">&nbsp;</span>
-                </td> -->
               </tr>
               <tr>
                 <td class="variable"> States names</td>
                 <div>
                   <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
-                  <!-- <td >
-                <input id= 'addbutton' type="button" value="Add" >
-                <span id="fooBar">&nbsp;</span>
-                </td> -->
                 </div>
               </tr>
               <tr>
                 <td class="variable"> Zero name(s)</td>
                 <td ><input id= zeroName style="width:100%;border: 0" type="text" value='H' ></td>
-               <!--  <td >
-                <input id= 'addbutton' type="button" value="Add" >
-                <span id="fooBar">&nbsp;</span>
-                </td> -->
               </tr>
               <tr>
-                <td class="variable"> Time step</td>
-                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.00273972602" ></td>
+                <td class="variable"> Time zero (t0)</td>
+                <td ><input id= modelt0 style="width:100%;border: 0" type="number" value="1940" ></td>
+              </tr>
+              <tr>
+                <td class="variable"> Maximum time step</td>
+                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03846153846" ></td>
               </tr>
             </table>
           </div>
+          <div>
+          <section id="setup">
+
+        <div id="setup">
+          <button style="background-color:#deeaee;width: 100%" class="accordion">rprocess/ skeleton</button>
+            <div class="panel"> </div>
+            <br>
+            <button style="background-color:#b1cbbb" class="accordion">rmeasure</button>
+              <div class="panel"></div>
+            <button style="background-color:#eea29a" class="accordion">dmeasure</button>
+          <div class="panel" >
+          </div>
+        </div>
+      </section>
+
+          </div>
+          <section id="step">
+        <div>
+          <label id = "label-file1" for="file1-upload" class="custom-button" style="background-color:#2ed573">
+          Upload data covariate
+          </label>
+          <input id="file1-upload" type="file" style="display:none;">
+        </div>
+        <div>
+          <label id = "label-file2" for="file2-upload" class="custom-button" style="background-color:#2ed573">
+          Upload data cases
+          </label>
+          <input id="file2-upload" type="file" style="display:none;">
+        </div>
+      </section>
     </div>
+<!-- THIRD TAB -->
     <div id="sobol" class="tab-pane fade">
       <div id="table">
       <table id="table1">
@@ -152,26 +180,16 @@ This function attempts to match trajectories of a model's deterministic to data.
           <td >
             <table>
               <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
-              <td><input id= valInp style="width:100px; border: 0; text-align: center;" type="number" value="2000"></td>
+              <td><input id= sobolPoint style="width:100px; border: 0; text-align: center;" type="number" value="2000"></td>
             </table>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <table>
-              <td title = 'Positive numeric scalar; particles with log likelihood below "tol" will be discarded.' class="variable"> tolarence </td>
-              <td>
-                <input id= valInp style="width:100px; border: 0; text-align: center;" type="number"  value="1e-17"> 
-              </td>
-            </table>
-            
           </td>
         </tr>
       </table>
       <br>
-      <div id="button"> <button>Generate & Run</button></div>
+      <div id="sobolButton"> <button>Generate & Run</button></div>
     </div>
     </div>
+<!-- FORTH TAB -->
     <div id="refinements" class="tab-pane fade">
       <button style="background-color:#deeaee;width: 100%" class="accordion">R0</button>
         <!-- <div class="panel"> -->
@@ -192,6 +210,8 @@ This function attempts to match trajectories of a model's deterministic to data.
                 parameter limits
               </td>
               <td>
+                <input type="number" name="param 1 limits" value="[0,1]">
+                to
                 <input type="number" name="param 1 limits" value="[0,1]">
               </td>
             </tr>

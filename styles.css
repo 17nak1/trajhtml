@@ -46,7 +46,7 @@ table#table , table#th, table#td{
 }
 
 div#table{
-  margin: 4px 10% 4px 10%;
+  margin: 4px 10% 4px 20%;
   padding: 4px 4px;
 }
 div#table table, div#table th, div#table td {
