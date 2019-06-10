@@ -12,6 +12,7 @@
 let snippet = require('./modelSnippet.js')
 let mathLib = require('./mathLib')
 let fmin    = require('fmin')
+let sobolSeq = require('./sobolSeq.js')
 
 /**
   * interpolBirth : Linear interpolation for birth rates.
