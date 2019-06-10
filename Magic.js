@@ -3,7 +3,7 @@
  */
 
 // let pfilterCalculation = require('pfilter').pfilterCalculation
-var dataCovar = [], dataCases = [], inputArr = [], init = [], res = []
+var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = []
 var indx = new Array(12)
 
 function start () {
@@ -12,78 +12,47 @@ function start () {
   req.onload = function () {
     code = req.responseText
   }
-  var fileChooser = document.getElementById('file1-upload')
-  fileChooser.onclick = function () {
-    this.value = ''
-  }
-  document.getElementById('file1-upload').onchange = function () {
-    var file = this.files[0]
-    dataCovar = []
-    var reader = new FileReader()
-    reader.onload = function () {
-      var lines = this.result.split('\n')
-      for (var line = 1; line < lines.length; line++) {
-        dataCovar.push(lines[line].split(','))
-      }
-      console.log(dataCovar)
+  let modelp = document.getElementById('modelParameter')
+  let modelParameter = modelp.value.split(',')
+  
+  let models= document.getElementById('modelStates')
+  let modelStates = models.value.split(',')
+  
+  let modelz = document.getElementById('zeroName')
+  let zeroName = modelz.value.split(',')
+
+  let modelTimestep = document.getElementById('modelTimestep')
+  let paramsInitial = modelStates
+//read the Sobol inputs
+  let sobolBoundTable = document.getElementById('sobolBound')
+  let rows = sobolBoundTable.querySelectorAll('tr')
+  for(i = 1; i < rows.length; i++){
+    let row = rows[i]
+    let cols = row.querySelectorAll('td')
+    let lowerBound = cols[1].querySelector('input').value
+    let upperBound = cols[2].querySelector('input').value
+    lowerBounds.push(Number(lowerBound))
+    upperBounds.push(Number(upperBound)) 
     }
-    reader.readAsText(file)
-  }
-  var fileChooser = document.getElementById('file2-upload')
-  fileChooser.onclick = function () {
-    this.value = ''
-  }
-  document.getElementById('file2-upload').onchange = function () {
-    var file = this.files[0]
-    dataCases = []
-    var reader = new FileReader ()
-    reader.onload = function () {
-      var lines = this.result.split('\n')
-      for (var line = 1; line < lines.length; line++) {
-        dataCases.push(lines[line].split(','))
-      }
-      console.log(dataCases)
-    }
-    reader.readAsText(file)
-  }
 
-  document.getElementById('file2-upload').onchange = function () {
-    var file = this.files[0]
-    dataInit = []
-    var reader = new FileReader ()
-    reader.onload = function () {
-      var lines = this.result.split('\n')
-      for (var line = 1; line < lines.length; line++) {
-        dataInit.push(lines[line].split(','))
-      }
-      console.log(dataInit)
-    }
-    reader.readAsText(file)
-  }
+  
 
-  let addbutton = document.getElementById('addbutton')
-  addbutton.onclick = function () {
-  let setup1 = document.querySelector('#setup')
-  let table1 = setup1.getElementById('table1')
-  let rows = table1.querySelectorAll('tr')
-  let row = rows[0]
-  let cols = row.querySelectorAll('td')
-  let cell = cols[cols.length - 2]
-  //Create an input type dynamically.
-  var element = cell.createElement("input");
+//   let addbutton = document.getElementById('addbutton')
+//   addbutton.onclick = function () {
+//   let setup1 = document.querySelector('#setup')
+//   let table1 = setup1.getElementById('table1')
+//   let rows = table1.querySelectorAll('tr')
+//   let row = rows[0]
+//   let cols = row.querySelectorAll('td')
+//   let cell = cols[cols.length - 2]
+//   //Create an input type dynamically.
+//   var element = cell.createElement("input");
+//   var foo = document.getElementById("fooBar");
 
-  // //Assign different attributes to the element.
-  // element.setAttribute("type", type);
-  // element.setAttribute("value", type);
-  // element.setAttribute("name", type);
+//   //Append the element in page (in span).
+//   foo.appendChild(element);
 
-
-  var foo = document.getElementById("fooBar");
-
-  //Append the element in page (in span).
-  foo.appendChild(element);
-
-}
+// }
   let computeButton = document.querySelector('button#calc')
   let downloadButton = document.querySelector('button#download')
   downloadButton.style.display = 'none'
