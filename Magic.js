@@ -2,7 +2,6 @@
  *  @file       Magic.js  
  */
 let sobolSeq = require('./sobolSeq.js')
-
 var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = [], indx = Array(6).fill(0)
 
 function start () {

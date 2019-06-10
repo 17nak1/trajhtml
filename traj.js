@@ -155,5 +155,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
   return arr
 }
 module.exports = {
-  traj_match
+  traj_match :   traj_match,
+  sobolSeq : sobolSeq
 }

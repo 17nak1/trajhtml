@@ -3594,7 +3594,8 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
   return arr
 }
 module.exports = {
-  traj_match
+  traj_match :   traj_match,
+  sobolSeq : sobolSeq
 }
 
 },{"./mathLib":2,"./modelSnippet.js":3,"./sobolSeq.js":5,"fmin":8}]},{},[]);
