@@ -55,52 +55,58 @@ function start () {
   }
   
   // Second tab
-  let modelp = document.getElementById('modelParameter')
-  let modelParameter = modelp.value.split(',')
   
-  let models= document.getElementById('modelStates')
-  let modelStates = models.value.split(',')
-  
-  let modelz = document.getElementById('zeroName')
-  let zeroName = modelz.value.split(',')
-
-  let modelt = document.getElementById('modelt0')
-  let modelt0= Number(modelt.value)
-
-  let modelTimestep = Number(document.getElementById('modelTimestep').value)
-  let paramsInitial = modelStates
-//read the Sobol inputs
-  let sobolBoundTable = document.getElementById('sobolBound')
-  let rows = sobolBoundTable.querySelectorAll('tr')
-  for(i = 1; i < rows.length; i++){
-    let row = rows[i]
-    let cols = row.querySelectorAll('td')
-    let lowerBound = cols[1].querySelector('input').value
-    let upperBound = cols[2].querySelector('input').value
-    lowerBounds.push(Number(lowerBound))
-    upperBounds.push(Number(upperBound)) 
-    }
-  
-  let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
-  
-  let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
   let sobolButton = document.getElementById('sobolButton')
   sobolButton.onclick = function () {
-    sobolButton.innerText = 'Running'
-    var data1 = []
-    var data2 = []
-    var res = []
-    for (let i = 0; i < dataCovar.length; i++) {
-      data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
-      data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
-    }
-    var interpolPopulation = interpolator(data1)
-    var interpolBirth = interpolator(data2)
-    let times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 2][0])];  
-    indx[0] = 1; indx[1] = 1; indx[3] = 1; indx[5] = 1; indx[6] = 1
-    for (let i = 0; i < sobolSet.length; i++) { 
-      ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx, modelTimestep); console.log(ans)
-      res.push(ans)
+    let modelp = document.getElementById('modelParameter')
+    let modelParameter = modelp.value.split(',')
+    
+    let models= document.getElementById('modelStates')
+    let modelStates = models.value.split(',')
+    
+    let modelz = document.getElementById('zeroName')
+    let zeroName = modelz.value.split(',')
+  
+    let modelt = document.getElementById('modelt0')
+    let modelt0= Number(modelt.value)
+  
+    let modelTimestep = Number(document.getElementById('modelTimestep').value)
+    let paramsInitial = modelStates
+  //read the Sobol inputs
+    let sobolBoundTable = document.getElementById('sobolBound')
+    let rows = sobolBoundTable.querySelectorAll('tr')
+    for(i = 1; i < rows.length; i++){
+      let row = rows[i]
+      let cols = row.querySelectorAll('td')
+      let lowerBound = cols[1].querySelector('input').value
+      let upperBound = cols[2].querySelector('input').value
+      lowerBounds.push(Number(lowerBound))
+      upperBounds.push(Number(upperBound)) 
+      }
+    
+    let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
+    let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
+
+    if(!dataCovar.length) {
+      alert('Upload data in "Model and Data", then you can generate and run!')
+    }else{
+      sobolButton.innerText = 'Running'
+      var data1 = []
+      var data2 = []
+      var res = []
+      for (let i = 0; i < dataCovar.length; i++) {
+        data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
+        data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
+      }
+      var interpolPopulation = interpolator(data1)
+      var interpolBirth = interpolator(data2)
+      let times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 2][0])];  
+      indx[0] = 1; indx[1] = 1; indx[3] = 1; indx[5] = 1; indx[6] = 1
+      setTimeout(function () { 
+        for (let i = 0; i < SobolNumberOfPoints; i++) { 
+        ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx, modelTimestep); console.log("answer",ans)
+        res.push(ans)
+      }},0)
     }
   }
 
@@ -163,7 +169,7 @@ function start () {
 //   }
 }
 
-function Csv () {
+function Csv (res) {
   var csv = ''
   res.forEach(function (row) {
     csv += row.join(',')
@@ -175,10 +181,13 @@ function Csv () {
   hiddenElement.setAttribute('download', 'result.csv')
   hiddenElement.click()
 }
+
 function activateDownload () {
   document.querySelector('button#download').disabled = false
   document.querySelector('button#download').style.backgroundColor = '#2ed573'
 }
+
+// interpolator
 function interpolator(points) {
   var first, n = points.length - 1,
     interpolated,
