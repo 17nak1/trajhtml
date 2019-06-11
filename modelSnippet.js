@@ -117,7 +117,7 @@ snippet.initz = function(pop, S, E, I, R) {
   return [S, E, I, R, H]
 }
 
-snippet.dmeasure = function (rho, psi, H, dCases) {
+snippet.dmeasure = function (rho, psi, H, dCases, giveLog) {
   var lik
   var mn = rho * H
   var v = mn * (1.0 - rho + psi * psi * mn)
@@ -130,7 +130,10 @@ snippet.dmeasure = function (rho, psi, H, dCases) {
       lik = mathLib.pnorm((modelCases + 0.5, mn, Math.sqrt(v) + tol)) + tol
     }
   } else {
-      lik = 1 
+    lik = 1
+  }
+  if (giveLog) {
+    lik = Math.log(lik)
   }
   return lik
 }

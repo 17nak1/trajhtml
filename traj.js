@@ -81,8 +81,8 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
 
     var simH = integrate(interpolPopulation, interpolBirth, params, times, deltaT)
     for (let i = 0; i < simH.length; i++) {
-      likvalue = snippet.dmeasure(rho, psi, simH[i], dataCases[i][1])
-      loglik = loglik + Math.log(likvalue)
+      likvalue = snippet.dmeasure(rho, psi, simH[i], dataCases[i][1], 1)
+      loglik = loglik + likvalue
     }
     ;console.log(params, loglik)
     return [-(loglik).toFixed(6)]
@@ -154,6 +154,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
   return arr
 }
 module.exports = {
-  traj_match :   traj_match,
+  traj_match : traj_match,
   sobolSeq : sobolSeq
 }

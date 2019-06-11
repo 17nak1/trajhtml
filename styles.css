@@ -242,7 +242,7 @@ h3#answer{
   text-align: center;
   margin-left:10px;
 }
-.accordion {
+accordion {
   background-color: #eee;
   color: #444;
   cursor: pointer;
@@ -253,7 +253,6 @@ h3#answer{
   outline: none;
   font-size: 15px;
   transition: 0.4s;
-  display = "none"
 }
 
 .active, .accordion:hover {
@@ -263,7 +262,7 @@ h3#answer{
 .panel {
   padding: 10 10px;
   background-color: white;
-  max-height: 1000p;
+  max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   margin: 1px 10% 1px 10%;
@@ -331,3 +330,8 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+.textarea {
+  width: 100%;
+  border: 0;
+  height:200px;
+}

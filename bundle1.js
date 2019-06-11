@@ -1,7 +1,5 @@
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 
-},{}],2:[function(require,module,exports){
-
 var mathLib = {}
 var erf = require('math-erf')
 var seedrandom = require('seedrandom')
@@ -198,7 +196,7 @@ module.exports = mathLib
 
 
 
-},{"math-erf":9,"seedrandom":16}],3:[function(require,module,exports){
+},{"math-erf":8,"seedrandom":15}],2:[function(require,module,exports){
 
 snippet = {}
 let mathLib = require('./mathLib') 
@@ -318,7 +316,7 @@ snippet.initz = function(pop, S, E, I, R) {
   return [S, E, I, R, H]
 }
 
-snippet.dmeasure = function (rho, psi, H, dCases) {
+snippet.dmeasure = function (rho, psi, H, dCases, giveLog) {
   var lik
   var mn = rho * H
   var v = mn * (1.0 - rho + psi * psi * mn)
@@ -331,7 +329,10 @@ snippet.dmeasure = function (rho, psi, H, dCases) {
       lik = mathLib.pnorm((modelCases + 0.5, mn, Math.sqrt(v) + tol)) + tol
     }
   } else {
-      lik = 1 
+    lik = 1
+  }
+  if (giveLog) {
+    lik = Math.log(lik)
   }
   return lik
 }
@@ -351,7 +352,7 @@ snippet.rmeasure = function (H, rho, psi) {
 
 
 module.exports = snippet
-},{"./mathLib":2}],4:[function(require,module,exports){
+},{"./mathLib":1}],3:[function(require,module,exports){
 
   sobolData = {}
 /* Copyright (c) 2007 Massachusetts Institute of Technology
@@ -1235,7 +1236,7 @@ sobolData.MAXDEG = 12
      ]
 
   module.exports = sobolData;
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /* Copyright (c) 2007 Massachusetts Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -1422,21 +1423,21 @@ sobolSeq.sobolDesign = function(lowerBounds, upperBounds, numberOfPoints) {
 }
 
 module.exports = sobolSeq
-},{"./sobolData.js":4}],6:[function(require,module,exports){
+},{"./sobolData.js":3}],5:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.NEGATIVE_INFINITY;
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.POSITIVE_INFINITY;
 
-},{}],8:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1862,7 +1863,7 @@ module.exports = Number.POSITIVE_INFINITY;
     exports.scale = scale;
 
 }));
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2217,7 +2218,7 @@ function erf( x ) {
 // EXPORTS //
 
 module.exports = erf;
-},{"const-ninf-float64":6,"const-pinf-float64":7,"math-evalpoly":12,"math-exp":13,"math-float64-set-low-word":14}],10:[function(require,module,exports){
+},{"const-ninf-float64":5,"const-pinf-float64":6,"math-evalpoly":11,"math-exp":12,"math-float64-set-low-word":13}],9:[function(require,module,exports){
 'use strict';
 
 // EVALPOLY //
@@ -2258,7 +2259,7 @@ function evalpoly( c, x ) {
 
 module.exports = evalpoly;
 
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /* jshint evil:true */
 'use strict';
 
@@ -2333,21 +2334,21 @@ function factory( c ) {
 // EXPORTS //
 
 module.exports = factory;
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = require( './evalpoly.js' );
 module.exports.factory = require( './factory.js' );
-},{"./evalpoly.js":10,"./factory.js":11}],13:[function(require,module,exports){
+},{"./evalpoly.js":9,"./factory.js":10}],12:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Math.exp;
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2410,7 +2411,7 @@ function setLowWord( x, low ) {
 
 module.exports = setLowWord;
 
-},{"./low.js":15}],15:[function(require,module,exports){
+},{"./low.js":14}],14:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2432,7 +2433,7 @@ if ( isLittleEndian === true ) {
 
 module.exports = LOW;
 
-},{"utils-is-little-endian":25}],16:[function(require,module,exports){
+},{"utils-is-little-endian":24}],15:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -2494,7 +2495,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":17,"./lib/tychei":18,"./lib/xor128":19,"./lib/xor4096":20,"./lib/xorshift7":21,"./lib/xorwow":22,"./seedrandom":23}],17:[function(require,module,exports){
+},{"./lib/alea":16,"./lib/tychei":17,"./lib/xor128":18,"./lib/xor4096":19,"./lib/xorshift7":20,"./lib/xorwow":21,"./seedrandom":22}],16:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -2610,7 +2611,7 @@ if (module && module.exports) {
 
 
 
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -2715,7 +2716,7 @@ if (module && module.exports) {
 
 
 
-},{}],19:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -2798,7 +2799,7 @@ if (module && module.exports) {
 
 
 
-},{}],20:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -2946,7 +2947,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],21:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -3045,7 +3046,7 @@ if (module && module.exports) {
 );
 
 
-},{}],22:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -3133,7 +3134,7 @@ if (module && module.exports) {
 
 
 
-},{}],23:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -3385,7 +3386,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":1}],24:[function(require,module,exports){
+},{"crypto":25}],23:[function(require,module,exports){
 'use strict';
 
 var ctors = {
@@ -3398,7 +3399,7 @@ var ctors = {
 
 module.exports = ctors;
 
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -3436,7 +3437,9 @@ function isLittleEndian() {
 
 module.exports = isLittleEndian();
 
-},{"./ctors.js":24}],"traj_match":[function(require,module,exports){
+},{"./ctors.js":23}],25:[function(require,module,exports){
+
+},{}],"traj_match":[function(require,module,exports){
 /**
  *  @file       traj.js        This function attempts to match trajectories of a model's deterministic skeleton to data.
  *                             Trajectory matching is equivalent to maximum likelihood estimatedation under the assumption 
@@ -3520,12 +3523,13 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
 
     var simH = integrate(interpolPopulation, interpolBirth, params, times, deltaT)
     for (let i = 0; i < simH.length; i++) {
-      likvalue = snippet.dmeasure(rho, psi, simH[i], dataCases[i][1])
-      loglik = loglik + Math.log(likvalue)
+      likvalue = snippet.dmeasure(rho, psi, simH[i], dataCases[i][1], 1)
+      loglik = loglik + likvalue
     }
     ;console.log(params, loglik)
     return [-(loglik).toFixed(6)]
   }
+  // console.log(params, -solution.fx)
   return[params, -solution.fx]
 }
 
@@ -3592,8 +3596,8 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
   return arr
 }
 module.exports = {
-  traj_match :   traj_match,
+  traj_match : traj_match,
   sobolSeq : sobolSeq
 }
 
-},{"./mathLib":2,"./modelSnippet.js":3,"./sobolSeq.js":5,"fmin":8}]},{},[]);
+},{"./mathLib":1,"./modelSnippet.js":2,"./sobolSeq.js":4,"fmin":7}]},{},[]);

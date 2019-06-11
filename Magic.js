@@ -3,7 +3,7 @@
  */
 let sobolSeq = require('traj_match').sobolSeq
 let traj_match = require('traj_match').traj_match
-var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = [], indx = Array(6).fill(0)
+var inputArr = [], init = [], res = [], indx = Array(6).fill(0)
 var dataCovar = [], dataCases = []
 
 function start () {
@@ -58,6 +58,7 @@ function start () {
   
   let sobolButton = document.getElementById('sobolButton')
   sobolButton.onclick = function () {
+    let lowerBounds = [], upperBounds = []
     let modelp = document.getElementById('modelParameter')
     let modelParameter = modelp.value.split(',')
     
@@ -86,7 +87,7 @@ function start () {
     
     let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
     let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
-
+    console.log(sobolSet[0])
     if(!dataCovar.length) {
       alert('Upload data in "Model and Data", then you can generate and run!')
     }else{
@@ -104,11 +105,25 @@ function start () {
       indx[0] = 1; indx[1] = 1; indx[3] = 1; indx[5] = 1; indx[6] = 1
       setTimeout(function () { 
         for (let i = 0; i < SobolNumberOfPoints; i++) { 
-        ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx, modelTimestep); console.log("answer",ans)
+        ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx, modelTimestep); //console.log("answer",ans)
         res.push(ans)
       }},0)
     }
   }
+  var acc = document.getElementsByClassName("accordion")
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active")
+      var panel = this.nextElementSibling
+      if (panel.style.maxHeight){
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px"
+      } 
+    })
+  }
+
 
 //   let sobolButton = document.querySelector('sobolButton')
 //   computeButton.onclick = function () {
