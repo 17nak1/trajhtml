@@ -28,8 +28,7 @@ let sobolSeq = require('./sobolSeq.js')
   * states        : Empty array for calculated states.
   * solution      : Include the result of  the optimizer function using Nelder Mead method.
   */
-function traj_match (interpolPopulation, interpolBirth, dataCases, params, times, index) { 
-  let deltaT = 0.03832991102
+function traj_match (interpolPopulation, interpolBirth, dataCases, params, times, index, deltaT) { 
   var tempIndex = 0
   var estimated = []
   var place = []

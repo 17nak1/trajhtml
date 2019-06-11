@@ -2,7 +2,9 @@
  *  @file       Magic.js  
  */
 let sobolSeq = require('traj_match').sobolSeq
+let traj_match = require('traj_match').traj_match
 var lowerBounds = [], upperBounds = [], inputArr = [], init = [], res = [], indx = Array(6).fill(0)
+var dataCovar = [], dataCases = []
 
 function start () {
   let req = new XMLHttpRequest()
@@ -10,33 +12,43 @@ function start () {
   req.onload = function () {
     code = req.responseText
   }
-  // First tab
+  var fileChooser = document.getElementById('file1-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
   document.getElementById('file1-upload').onchange = function () {
     document.getElementById('label-file1').innerHTML = 'Uploaded'
     document.getElementById('label-file1').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
-    let dataCovar = []
+    dataCovar = []
     var reader = new FileReader()
     reader.onload = function () {
       var lines = this.result.split('\n')
       for (var line = 1; line < lines.length; line++) {
-        dataCovar.push(lines[line].split(','))
+        if(lines[line].length) {
+          dataCovar.push(lines[line].split(','))
+        }
       }
     }
     reader.readAsText(file)
   }
   
-
+  var fileChooser = document.getElementById('file2-upload')
+  fileChooser.onclick = function () {
+    this.value = ''
+  }
   document.getElementById('file2-upload').onchange = function () {
     document.getElementById('label-file2').innerHTML = 'Uploaded'
     document.getElementById('label-file2').style.backgroundColor = '#ffbf00'
     var file = this.files[0]
-    let dataCases = []
+    dataCases = []
     var reader = new FileReader ()
     reader.onload = function () {
       var lines = this.result.split('\n')
       for (var line = 1; line < lines.length; line++) {
-        dataCases.push(lines[line].split(','))
+        if(lines[line].length) {
+          dataCases.push(lines[line].split(','))
+        }
       }
     }
     reader.readAsText(file)
@@ -52,10 +64,10 @@ function start () {
   let modelz = document.getElementById('zeroName')
   let zeroName = modelz.value.split(',')
 
-  let modelt = document.getElementById('zeroName')
-  let modelt0= modelt.value
+  let modelt = document.getElementById('modelt0')
+  let modelt0= Number(modelt.value)
 
-  let modelTimestep = document.getElementById('modelTimestep')
+  let modelTimestep = Number(document.getElementById('modelTimestep').value)
   let paramsInitial = modelStates
 //read the Sobol inputs
   let sobolBoundTable = document.getElementById('sobolBound')
@@ -68,34 +80,35 @@ function start () {
     lowerBounds.push(Number(lowerBound))
     upperBounds.push(Number(upperBound)) 
     }
-  let times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 2][0])];  
-  let SobolNumberOfPoints = document.getElementById('sobolPoint').value
+  
+  let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
   
   let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
-  console.log(sobolSet)
   let sobolButton = document.getElementById('sobolButton')
   sobolButton.onclick = function () {
+    sobolButton.innerText = 'Running'
     var data1 = []
     var data2 = []
-    for (let i = 0; i < dataCovar.length - 1; i++) {
-    data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
-    data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
+    var res = []
+    for (let i = 0; i < dataCovar.length; i++) {
+      data1.push([Number(dataCovar[i][0]), Number(dataCovar[i][1])])
+      data2.push([Number(dataCovar[i][0]), Number(dataCovar[i][2])])
     }
     var interpolPopulation = interpolator(data1)
     var interpolBirth = interpolator(data2)
+    let times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 2][0])];  
     indx[0] = 1; indx[1] = 1; indx[3] = 1; indx[5] = 1; indx[6] = 1
-    for (let i = 0; i < sobolSet.length; i++) {
-      var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx)
+    for (let i = 0; i < sobolSet.length; i++) { 
+      ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, indx, modelTimestep); console.log(ans)
       res.push(ans)
     }
   }
 
-  let computeButton = document.querySelector('button#calc')
-  let downloadButton = document.querySelector('button#download')
-  downloadButton.style.display = 'none'
-  computeButton.onclick = function () {
+//   let sobolButton = document.querySelector('sobolButton')
+//   computeButton.onclick = function () {
+//     sobolButton.style.display = 'running'
     
-}
+// }
 /////////////////////////////////////////////////////////////////////////////////
 // let computeButton = document.querySelector('button#calc')
 //   let downloadButton = document.querySelector('button#download')
