@@ -13,6 +13,7 @@ let snippet = require('./modelSnippet.js')
 let mathLib = require('./mathLib')
 let fmin    = require('fmin')
 let sobolSeq = require('./sobolSeq.js')
+let generateSets = require('./generateSets.js')
 
 /**
   * interpolBirth : Linear interpolation for birth rates.
@@ -155,5 +156,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
 }
 module.exports = {
   traj_match : traj_match,
-  sobolSeq : sobolSeq
+  sobolSeq : sobolSeq, 
+  generateSets :generateSets
 }

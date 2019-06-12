@@ -226,16 +226,16 @@ return lik'
           </div>
           <section id="step">
         <div>
-          <label id = "label-file1" for="file1-upload" class="custom-button" style="background-color:#2ed573">
+          <label id = "label-tab2file1" for="tab2file1-upload" class="custom-button" style="background-color:#2ed573">
           Upload data covariate
           </label>
-          <input id="file1-upload" type="file" style="display:none;">
+          <input id="tab2file1-upload" type="file" style="display:none;">
         </div>
         <div>
-          <label id = "label-file2" for="file2-upload" class="custom-button" style="background-color:#2ed573">
+          <label id = "label-tab2file2" for="tab2file2-upload" class="custom-button" style="background-color:#2ed573">
           Upload data cases
           </label>
-          <input id="file2-upload" type="file" style="display:none;">
+          <input id="tab2file2-upload" type="file" style="display:none;">
         </div>
       </section>
     </div>
@@ -326,62 +326,220 @@ return lik'
 <!-- FORTH TAB -->
     <div id="refinements" class="tab-pane fade">
       <div>
-          <label id = "label-file1" for="file1-upload" class="custom-button" style="background-color:#2ed573">
+          <label id = "label-tab4" for="tab4-upload" class="custom-button" style="background-color:#2ed573">
           Upload initial points
           </label>
-          <input id="file1-upload" type="file" style="display:none;">
+          <input id="tab4-upload" type="file" style="display:none;">
         </div>
       <button style="background-color:#deeaee;width: 100%" class="accordion">R0</button>
-        <!-- <div class="panel"> -->
-          <table id="tableR0">
-            <tr>
-              <td>
-                log scale
-              </td>
-              <td>
-               <label class="switch"> 
-                   <input type="checkbox">
-                   <span class="slider round"></span>
-                 </label> 
-              </td>
-            </tr>
-            <tr>
-              <td>
-                parameter limits
-              </td>
-              <td>
-                <input type="number" name="param 1 limits" value="0">
-                to
-                <input type="number" name="param 1 limits" value="1">
-              </td>
-            </tr>
-            <tr>
-              <td>
-                flag bound
-              </td>
-              <td>
-                <label class="switch"> 
-                   <input type="checkbox">
-                   <span class="slider round"></span>
-                 </label>
-              </td>
-            </tr>
-          </table>
+      <div class="panel" >
+          <div id="table">
+            <table id="tableR0">
+              <tr>
+                <td>
+                  log scale
+                </td>
+                <td>
+                 <label class="switch"> 
+                     <input id="logScaleR0" type="checkbox">
+                     <span class="slider round"></span>
+                   </label> 
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating. 0: No limit; 1:keep the parameter in (0,1); 2: keep the parameter positive.">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox" id = "flagR0">
+                     <span class="slider round"></span>
+                   </label>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  parameter limits
+                </td>
+                <td>
+                  <input type="number" id="limit1" value="0">
+                  to
+                  <input type="number" id="limit2" value="1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Number of points 
+                </td>
+                <td>
+                  <input type="number" id="NoPoints" value="0">
+                </td>
+              </tr>
+            </table>
+          <div> <button id = "buttonRunR0" >Generate & Run</button></div>
+        </div>
+    </div>
+      <button style="background-color:#f7786b;width: 100%" class="accordion">Amplitude</button>
+        <div class="panel" >
+          <div id="table">
+            <table id="tableR0">
+              <tr>
+                <td>
+                  log scale
+                </td>
+                <td>
+                 <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label> 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  parameter limits
+                </td>
+                <td>
+                  <input type="number" name="param 1 limits" value="0">
+                  to
+                  <input type="number" name="param 1 limits" value="1">
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating. 0: No limit; 1:keep the parameter in (0,1); 2: keep the parameter positive.">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label>
+                </td>
+              </tr>
+            </table>
           <div> <button>Run</button></div>
-        <!-- </div> -->
-        <button style="background-color:#f7786b;width: 100%" class="accordion">Amplitude</button>
-        <div class="panel">
         </div>
-        <button style="background-color:#b1cbbb;width: 100%" class="accordion">Mu</button>
-        <div class="panel">
+    </div>
+      <button style="background-color:#b1cbbb;width: 100%" class="accordion">Mu</button>
+        <div class="panel" >
+          <div id="table">
+            <table id="tableR0">
+              <tr>
+                <td>
+                  log scale
+                </td>
+                <td>
+                 <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label> 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  parameter limits
+                </td>
+                <td>
+                  <input type="number" name="param 1 limits" value="0">
+                  to
+                  <input type="number" name="param 1 limits" value="1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label>
+                </td>
+              </tr>
+            </table>
+          <div> <button>Run</button></div>
         </div>
-        <button style="background-color:#eea29a;width: 100%" class="accordion">Rho</button>
-        <div class="panel">
+    </div>
+      <button style="background-color:#eea29a;width: 100%" class="accordion">Rho</button>
+        <div class="panel" >
+          <div id="table">
+            <table id="tableR0">
+              <tr>
+                <td>
+                  log scale
+                </td>
+                <td>
+                 <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label> 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  parameter limits
+                </td>
+                <td>
+                  <input type="number" name="param 1 limits" value="0">
+                  to
+                  <input type="number" name="param 1 limits" value="1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label>
+                </td>
+              </tr>
+            </table>
+          <div> <button>Run</button></div>
         </div>
-        <button style="background-color:#deeaee;width: 100%" class="accordion">Psi</button>
-        <div class="panel">
+    </div>
+      <button style="background-color:#deeaee;width: 100%" class="accordion">Psi</button>
+        <div class="panel" >
+          <div id="table">
+            <table id="tableR0">
+              <tr>
+                <td>
+                  log scale
+                </td>
+                <td>
+                 <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label> 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  parameter limits
+                </td>
+                <td>
+                  <input type="number" name="param 1 limits" value="0">
+                  to
+                  <input type="number" name="param 1 limits" value="1">
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox">
+                     <span class="slider round"></span>
+                   </label>
+                </td>
+              </tr>
+            </table>
+          <div> <button>Generate & Run</button></div>
         </div>
-        <button>Combine</button>
+    </div>
+    <button>Combine</button>
     </div>
   </div>
 </div>

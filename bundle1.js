@@ -1,4 +1,222 @@
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+/**
+ *  @file         generateSets.js     This function can generate set as initial parameters for calculation in trajMatch. 
+ *  @return                           Considering the dataset and the number of elements in paramIndexArray, it generates
+ *                                    a table as a csv file for each element.
+ *                                    
+ *                                    dataset : The set which all the sets will be generate from;(DeterministicSEIR_all.csv)
+ *                                    determineRunProperties : Function that defines logScale, paramLimits and flagBound for each parameter.
+ *                                    paramObject : [R0Index, AMPLITUDE, ... ,LogLikIndex]
+ *                                    paramIndex :          the index of the parameter that we want to generate sets for it.
+ *                                    tolerance : Determine how far from the best liklihood is acceptable.
+ *                                    number of profile : Number of points to be consider in the interval of paramLimits.
+ *                                    number of points : Number of  points to be generated.
+ *                                    s : The value that is used to add noice in the best set and generate more points.
+ *                                    indexMult : Defines how to generate new values ('divide & multiply' or 'subtract & add')
+ *                                    indexInc : Defines how to generate new values (divide or multiply or both)(subtract or add or both)
+ *                                    paramLimits : Lower and upper bound.
+ *                                    logScale : If we consider calculation in the log scale, this value equals one.
+ *                                    flagBound : If the generated values should be in the interval (0,1), this value equals one.
+ *                                      
+ *
+ *  @author       Nazila Akhavan
+ *  @date         March 2019
+ *  @reference                        Aaron A. King.
+ */
+
+
+// generateSets ={} 
+
+generateSets = function (data, parameterIndex, logScale, paramLimits, flagBound, numberOfPoints) {
+  let dataset = []
+  for ( let i = 0; i < data.length; i++) {
+    if(data[i] !== '') {
+      dataset.push(data[i])
+    }
+  }
+  
+  var tolerance = 50
+  var numberOfProfile = 50
+  // var numberOfPoints = 1000
+  
+  var indexInc = 0
+  var indexMult = 1
+  var s = 0.01
+  
+  // Indicies for parameters. 
+  const paramObject = {
+  R0Index : 0,
+  AMPLITUDE : 1,
+  GAMMA : 2,
+  MU : 3,
+  SIGMA : 4,
+  RHO : 5,
+  PSI : 6,
+  S_0 : 7,
+  E_0 : 8,
+  I_0 : 9,
+  R_0 : 10,
+  LogLikIndex : 11
+  }
+  
+  let Maxloglik
+  // Reorder dataset descending based on LogLik column and find the maximum LogLik
+  dataset.sort(sortFunction)
+  Maxloglik = dataset[0][paramObject.LogLikIndex]
+  
+  // Start calculation for each parameter(generating parameter) in paramIndexArray and generate a set based on this parameter.
+  for ( index = 0; index < paramIndexArray.length; index++) {
+    var paramIndex = paramIndexArray[index]
+    var paramLimits , logScale, flagBound
+    [paramLimits, logScale, flagBound] = determineRunProperties (paramIndex, paramObject)
+
+    var step = 0, ltemp = 0, temp = [], temp2 = []
+    var newDataset =[], paramArray = []
+    var set1 = [], paramProfile = []
+  
+    // Calculate the step size for the generating parameter limits interval 
+    if (logScale === 1) {
+      if (paramLimits[0] <= 0 || paramLimits[1] <= 0) {
+        throw "The lower(upper) bound for the parameter is not positive."
+      }
+      step = (Math.log(paramLimits[1]) - Math.log(paramLimits[0])) / (numberOfProfile - 1)
+      ltemp = Math.log(paramLimits[0])
+    } else {
+      step = (paramLimits[1] - paramLimits[0]) / (numberOfProfile - 1)
+      ltemp = paramLimits[0]
+    }
+    // newDataset include rows that has LogLik in [LogLik - tolerance, LogLik] from which Paramprofile will be made. 
+    // temp and tem2 are temperory matrix that include noise to the generating parameter in different ways.
+    for (i = 0; i < dataset.length; i++ ) { 
+      if (dataset[i][paramObject.LogLikIndex] > Maxloglik - tolerance && dataset[i][paramObject.LogLikIndex] < 0) {
+        newDataset.push((dataset[i]).map(Number))
+      } else {
+        i = dataset.length
+      }
+    }
+    
+    // Create a sequence of points in the interval of the generating parameter
+    for (i = 0; i < numberOfProfile; i++) {
+      if (logScale === 1) {
+        paramArray.push(Math.exp(ltemp))
+      } else {
+        paramArray.push(Number(ltemp))
+      }
+      ltemp += step
+    }
+    
+    for (q = 1; q < paramArray.length; q++) {
+      set1 = []
+      for (j =0; j < newDataset.length; j++) {
+        if (newDataset.length > 0){
+          if (newDataset[j][paramIndex] >= paramArray[q - 1] && newDataset[j][paramIndex] <= paramArray[q]) {
+            set1.push(newDataset[j])
+          }
+        }
+      }
+      if(set1.length > 0) {
+        set1.sort(sortFunction) 
+        paramProfile.push(set1[0])
+      } 
+    }
+    
+    temp = paramProfile.map(row => [].concat(row))
+    temp2 = paramProfile.map(row => [].concat(row))
+    
+    for (q = 1; q <= Math.ceil(numberOfPoints / temp.length); q++) {
+      if (indexMult === 1) {
+        if (indexInc === -1) {
+          nextDivide(temp2, paramIndex, s, paramProfile)
+        } else if (indexInc === 1) {
+          nextMultiply(temp, paramIndex, s, paramProfile)
+        } else {
+          if (q % 2 === 1) {
+            nextDivide(temp2, paramIndex, s, paramProfile)
+          } else {
+            nextMultiply(temp, paramIndex, s, paramProfile)
+          }
+        }
+      } else {
+        if (indexInc === -1) {
+          nextSubtract(temp2, paramIndex, s, paramProfile)
+        } else if (indexInc === 1) {
+          nextAdd(temp, paramIndex, s, paramProfile)
+        } else {
+          if (q % 2 === 1) {
+            nextSubtract(temp2, paramIndex, s, paramProfile)
+          } else {
+            nextAdd(temp, paramIndex, s, paramProfile)
+          }
+        }
+      }
+    }
+  // We need exactly 'numberOfPoints' rows
+    paramProfile.splice(numberOfPoints)
+  
+  // Delete LogLik column and check the flagBounds
+    for (i = 0; i < paramProfile.length; i++) {
+      paramProfile[i].pop()
+    }
+    if (flagBound === 1) {
+      for (i = 0; i < paramProfile.length; i++) {
+        if(paramProfile[i][paramIndex] > 1 - 1e-6) {
+          paramProfile[i][paramIndex] = 1 - 1e-6
+        } else if (paramProfile[i][paramIndex] < 1e-6) {
+        paramProfile[i][paramIndex] = 1e-6
+        }
+      }
+    } else if (flagBound === 2) {
+      for (i = 0; i < paramProfile.length; i++) {
+        if (paramprofile[i][paramIndex] < 1e-6)
+          paramProfile[i][paramIndex] =  1e-6
+      }
+    }
+  }
+} 
+
+// Helper functions
+function sortFunction(a, b) {
+  if (Number(a[a.length - 1]) === Number(b[a.length - 1])) {
+    return 0
+  }
+  else {
+    return (Number(a[a.length - 1]) < Number(b[a.length - 1])) ? 1 : -1;
+  }
+}
+
+function nextDivide(temp, paramIndex, s, paramProfile) {
+  for (i = 0; i < temp.length; i++) { 
+    temp[i][paramIndex] /= (1 + s)
+  }
+  paramProfile.push(...[].concat(temp.map(row => [].concat(row))))
+}
+
+function nextMultiply(temp, paramIndex, s, paramProfile) {
+  for (i = 0; i < temp.length; i++) {
+    temp[i][paramIndex] *= (1 + s)
+  }
+  paramProfile.push(...[].concat(temp.map(row => [].concat(row))))
+}
+
+function nextAdd (temp, paramIndex, s, paramProfile) {
+  for (i = 0; i < temp.length; i++) {
+    temp[i][paramIndex] += s
+  }
+  paramProfile.push(...[].concat(temp.map(row => [].concat(row))))
+}
+
+function nextSubtract (temp, paramIndex, s, paramProfile) {
+  for (i = 0; i < temp.length; i++) {
+    temp[i][paramIndex] -= s
+  }
+  paramProfile.push(...[].concat(temp.map(row => [].concat(row))))
+}
+
+module.exports = generateSets 
+
+
+
+},{}],2:[function(require,module,exports){
 
 var mathLib = {}
 var erf = require('math-erf')
@@ -196,7 +414,7 @@ module.exports = mathLib
 
 
 
-},{"math-erf":8,"seedrandom":15}],2:[function(require,module,exports){
+},{"math-erf":9,"seedrandom":16}],3:[function(require,module,exports){
 
 snippet = {}
 let mathLib = require('./mathLib') 
@@ -352,7 +570,7 @@ snippet.rmeasure = function (H, rho, psi) {
 
 
 module.exports = snippet
-},{"./mathLib":1}],3:[function(require,module,exports){
+},{"./mathLib":2}],4:[function(require,module,exports){
 
   sobolData = {}
 /* Copyright (c) 2007 Massachusetts Institute of Technology
@@ -1236,7 +1454,7 @@ sobolData.MAXDEG = 12
      ]
 
   module.exports = sobolData;
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /* Copyright (c) 2007 Massachusetts Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -1423,21 +1641,21 @@ sobolSeq.sobolDesign = function(lowerBounds, upperBounds, numberOfPoints) {
 }
 
 module.exports = sobolSeq
-},{"./sobolData.js":3}],5:[function(require,module,exports){
+},{"./sobolData.js":4}],6:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.NEGATIVE_INFINITY;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.POSITIVE_INFINITY;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1863,7 +2081,7 @@ module.exports = Number.POSITIVE_INFINITY;
     exports.scale = scale;
 
 }));
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2218,7 +2436,7 @@ function erf( x ) {
 // EXPORTS //
 
 module.exports = erf;
-},{"const-ninf-float64":5,"const-pinf-float64":6,"math-evalpoly":11,"math-exp":12,"math-float64-set-low-word":13}],9:[function(require,module,exports){
+},{"const-ninf-float64":6,"const-pinf-float64":7,"math-evalpoly":12,"math-exp":13,"math-float64-set-low-word":14}],10:[function(require,module,exports){
 'use strict';
 
 // EVALPOLY //
@@ -2259,7 +2477,7 @@ function evalpoly( c, x ) {
 
 module.exports = evalpoly;
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /* jshint evil:true */
 'use strict';
 
@@ -2334,21 +2552,21 @@ function factory( c ) {
 // EXPORTS //
 
 module.exports = factory;
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = require( './evalpoly.js' );
 module.exports.factory = require( './factory.js' );
-},{"./evalpoly.js":9,"./factory.js":10}],12:[function(require,module,exports){
+},{"./evalpoly.js":10,"./factory.js":11}],13:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Math.exp;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2411,7 +2629,7 @@ function setLowWord( x, low ) {
 
 module.exports = setLowWord;
 
-},{"./low.js":14}],14:[function(require,module,exports){
+},{"./low.js":15}],15:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2433,7 +2651,7 @@ if ( isLittleEndian === true ) {
 
 module.exports = LOW;
 
-},{"utils-is-little-endian":24}],15:[function(require,module,exports){
+},{"utils-is-little-endian":25}],16:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -2495,7 +2713,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":16,"./lib/tychei":17,"./lib/xor128":18,"./lib/xor4096":19,"./lib/xorshift7":20,"./lib/xorwow":21,"./seedrandom":22}],16:[function(require,module,exports){
+},{"./lib/alea":17,"./lib/tychei":18,"./lib/xor128":19,"./lib/xor4096":20,"./lib/xorshift7":21,"./lib/xorwow":22,"./seedrandom":23}],17:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -2611,7 +2829,7 @@ if (module && module.exports) {
 
 
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -2716,7 +2934,7 @@ if (module && module.exports) {
 
 
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -2799,7 +3017,7 @@ if (module && module.exports) {
 
 
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -2947,7 +3165,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -3046,7 +3264,7 @@ if (module && module.exports) {
 );
 
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -3134,7 +3352,7 @@ if (module && module.exports) {
 
 
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -3386,7 +3604,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":25}],23:[function(require,module,exports){
+},{"crypto":26}],24:[function(require,module,exports){
 'use strict';
 
 var ctors = {
@@ -3399,7 +3617,7 @@ var ctors = {
 
 module.exports = ctors;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -3437,7 +3655,7 @@ function isLittleEndian() {
 
 module.exports = isLittleEndian();
 
-},{"./ctors.js":23}],25:[function(require,module,exports){
+},{"./ctors.js":24}],26:[function(require,module,exports){
 
 },{}],"traj_match":[function(require,module,exports){
 /**
@@ -3455,6 +3673,7 @@ let snippet = require('./modelSnippet.js')
 let mathLib = require('./mathLib')
 let fmin    = require('fmin')
 let sobolSeq = require('./sobolSeq.js')
+let generateSets = require('./generateSets.js')
 
 /**
   * interpolBirth : Linear interpolation for birth rates.
@@ -3597,7 +3816,8 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
 }
 module.exports = {
   traj_match : traj_match,
-  sobolSeq : sobolSeq
+  sobolSeq : sobolSeq, 
+  generateSets :generateSets
 }
 
-},{"./mathLib":1,"./modelSnippet.js":2,"./sobolSeq.js":4,"fmin":7}]},{},[]);
+},{"./generateSets.js":1,"./mathLib":2,"./modelSnippet.js":3,"./sobolSeq.js":5,"fmin":8}]},{},[]);
