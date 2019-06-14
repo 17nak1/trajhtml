@@ -24,23 +24,26 @@
  */
 
 
-generateSets ={} 
+let generateSets ={} 
 
-generateSets.generateSet = function (data, parameterIndex, logScale, paramLimits, flagBound, numberOfPoints) {
+generateSets.generateSet = function (data, paramIndex, logScale, paramLimits, flagBound, numberOfPoints) {
   let dataset = []
-  for ( let i = 0; i < data.length; i++) {
-    if(data[i] !== '') {
+
+  for ( let i = 1; i < data.length; i++) {
+    if(data[i].length) {
       dataset.push(data[i])
     }
   }
-  
-  var tolerance = 50
-  var numberOfProfile = 50
-  // var numberOfPoints = 1000
-  
-  var indexInc = 0
-  var indexMult = 1
-  var s = 0.01
+  let tolerance = 50
+  let numberOfProfile = 50
+    
+  let indexInc = 0
+  let indexMult = 1
+  let s = 0.01
+  let step = 0, ltemp = 0, temp = [], temp2 = []
+  let newDataset =[], paramArray = []
+  let set1 = [], paramProfile = []
+  let Maxloglik
   
   // Indicies for parameters. 
   const paramObject = {
@@ -58,119 +61,106 @@ generateSets.generateSet = function (data, parameterIndex, logScale, paramLimits
   LogLikIndex : 11
   }
   
-  let Maxloglik
   // Reorder dataset descending based on LogLik column and find the maximum LogLik
   dataset.sort(sortFunction)
   Maxloglik = dataset[0][paramObject.LogLikIndex]
   
-  // Start calculation for each parameter(generating parameter) in paramIndexArray and generate a set based on this parameter.
-  for ( index = 0; index < paramIndexArray.length; index++) {
-    var paramIndex = paramIndexArray[index]
-    var paramLimits , logScale, flagBound
-    [paramLimits, logScale, flagBound] = determineRunProperties (paramIndex, paramObject)
-
-    var step = 0, ltemp = 0, temp = [], temp2 = []
-    var newDataset =[], paramArray = []
-    var set1 = [], paramProfile = []
-  
-    // Calculate the step size for the generating parameter limits interval 
-    if (logScale === 1) {
-      if (paramLimits[0] <= 0 || paramLimits[1] <= 0) {
-        throw "The lower(upper) bound for the parameter is not positive."
-      }
-      step = (Math.log(paramLimits[1]) - Math.log(paramLimits[0])) / (numberOfProfile - 1)
-      ltemp = Math.log(paramLimits[0])
+  // Start calculation for the parameter(generating parameter) and generate a set based on this parameter.
+  // Calculate the step size for the generating parameter limits interval 
+  if (logScale === 1) {
+    if (paramLimits[0] <= 0 || paramLimits[1] <= 0) {
+      throw "The lower(upper) bound for the parameter is not positive."
+    }
+    step = (Math.log(paramLimits[1]) - Math.log(paramLimits[0])) / (numberOfProfile - 1)
+    ltemp = Math.log(paramLimits[0])
+  } else {
+    step = (paramLimits[1] - paramLimits[0]) / (numberOfProfile - 1)
+    ltemp = paramLimits[0]
+  }
+  // newDataset include rows that has LogLik in [LogLik - tolerance, LogLik] from which Paramprofile will be made. 
+  // temp and tem2 are temperory matrix that include noise to the generating parameter in different ways.
+  for (i = 0; i < dataset.length; i++ ) { 
+    if (dataset[i][paramObject.LogLikIndex] > Maxloglik - tolerance && dataset[i][paramObject.LogLikIndex] < 0) {
+      newDataset.push((dataset[i]).map(Number))
     } else {
-      step = (paramLimits[1] - paramLimits[0]) / (numberOfProfile - 1)
-      ltemp = paramLimits[0]
+      i = dataset.length
     }
-    // newDataset include rows that has LogLik in [LogLik - tolerance, LogLik] from which Paramprofile will be made. 
-    // temp and tem2 are temperory matrix that include noise to the generating parameter in different ways.
-    for (i = 0; i < dataset.length; i++ ) { 
-      if (dataset[i][paramObject.LogLikIndex] > Maxloglik - tolerance && dataset[i][paramObject.LogLikIndex] < 0) {
-        newDataset.push((dataset[i]).map(Number))
-      } else {
-        i = dataset.length
-      }
+  }    
+  // Create a sequence of points in the interval of the generating parameter
+  for (i = 0; i < numberOfProfile; i++) {
+    if (logScale === 1) {
+      paramArray.push(Math.exp(ltemp))
+    } else {
+      paramArray.push(Number(ltemp))
     }
-    
-    // Create a sequence of points in the interval of the generating parameter
-    for (i = 0; i < numberOfProfile; i++) {
-      if (logScale === 1) {
-        paramArray.push(Math.exp(ltemp))
-      } else {
-        paramArray.push(Number(ltemp))
-      }
-      ltemp += step
-    }
-    
-    for (q = 1; q < paramArray.length; q++) {
-      set1 = []
-      for (j =0; j < newDataset.length; j++) {
-        if (newDataset.length > 0){
-          if (newDataset[j][paramIndex] >= paramArray[q - 1] && newDataset[j][paramIndex] <= paramArray[q]) {
-            set1.push(newDataset[j])
-          }
+    ltemp += step
+  }    
+  for (q = 1; q < paramArray.length; q++) {
+    set1 = []
+    for (j =0; j < newDataset.length; j++) {
+      if (newDataset.length > 0){
+        if (newDataset[j][paramIndex] >= paramArray[q - 1] && newDataset[j][paramIndex] <= paramArray[q]) {
+          set1.push(newDataset[j])
         }
       }
-      if(set1.length > 0) {
-        set1.sort(sortFunction) 
-        paramProfile.push(set1[0])
-      } 
     }
-    
-    temp = paramProfile.map(row => [].concat(row))
-    temp2 = paramProfile.map(row => [].concat(row))
-    
-    for (q = 1; q <= Math.ceil(numberOfPoints / temp.length); q++) {
-      if (indexMult === 1) {
-        if (indexInc === -1) {
+    if(set1.length > 0) {
+      set1.sort(sortFunction) 
+      paramProfile.push(set1[0])
+    } 
+  }    
+  temp = paramProfile.map(row => [].concat(row))
+  temp2 = paramProfile.map(row => [].concat(row))    
+  for (q = 1; q <= Math.ceil(numberOfPoints / temp.length); q++) {
+    if (indexMult === 1) {
+      if (indexInc === -1) {
+        nextDivide(temp2, paramIndex, s, paramProfile)
+      } else if (indexInc === 1) {
+        nextMultiply(temp, paramIndex, s, paramProfile)
+      } else {
+        if (q % 2 === 1) {
           nextDivide(temp2, paramIndex, s, paramProfile)
-        } else if (indexInc === 1) {
+        } else {
           nextMultiply(temp, paramIndex, s, paramProfile)
-        } else {
-          if (q % 2 === 1) {
-            nextDivide(temp2, paramIndex, s, paramProfile)
-          } else {
-            nextMultiply(temp, paramIndex, s, paramProfile)
-          }
         }
+      }
+    } else {
+      if (indexInc === -1) {
+        nextSubtract(temp2, paramIndex, s, paramProfile)
+      } else if (indexInc === 1) {
+        nextAdd(temp, paramIndex, s, paramProfile)
       } else {
-        if (indexInc === -1) {
+        if (q % 2 === 1) {
           nextSubtract(temp2, paramIndex, s, paramProfile)
-        } else if (indexInc === 1) {
-          nextAdd(temp, paramIndex, s, paramProfile)
         } else {
-          if (q % 2 === 1) {
-            nextSubtract(temp2, paramIndex, s, paramProfile)
-          } else {
-            nextAdd(temp, paramIndex, s, paramProfile)
-          }
+          nextAdd(temp, paramIndex, s, paramProfile)
         }
-      }
-    }
-  // We need exactly 'numberOfPoints' rows
-    paramProfile.splice(numberOfPoints)
-  
-  // Delete LogLik column and check the flagBounds
-    for (i = 0; i < paramProfile.length; i++) {
-      paramProfile[i].pop()
-    }
-    if (flagBound === 1) {
-      for (i = 0; i < paramProfile.length; i++) {
-        if(paramProfile[i][paramIndex] > 1 - 1e-6) {
-          paramProfile[i][paramIndex] = 1 - 1e-6
-        } else if (paramProfile[i][paramIndex] < 1e-6) {
-        paramProfile[i][paramIndex] = 1e-6
-        }
-      }
-    } else if (flagBound === 2) {
-      for (i = 0; i < paramProfile.length; i++) {
-        if (paramprofile[i][paramIndex] < 1e-6)
-          paramProfile[i][paramIndex] =  1e-6
       }
     }
   }
+// We need exactly 'numberOfPoints' rows
+  paramProfile.splice(numberOfPoints)  
+// Delete LogLik column and check the flagBounds
+  for (i = 0; i < paramProfile.length; i++) {
+     paramProfile[i].pop()
+  }
+  
+  if (flagBound === 1) {
+    for (i = 0; i < paramProfile.length; i++) {
+      if(paramProfile[i][paramIndex] > 1 - 1e-6) {
+        paramProfile[i][paramIndex] = 1 - 1e-6
+      } else if (paramProfile[i][paramIndex] < 1e-6) {
+      paramProfile[i][paramIndex] = 1e-6
+      }
+    }
+  } else if (flagBound === 2) {
+    for (i = 0; i < paramProfile.length; i++) {
+      if (paramprofile[i][paramIndex] < 1e-6)
+        paramProfile[i][paramIndex] =  1e-6
+    }
+  }
+  paramProfile.splice(0,0,['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0'])
+  return(paramProfile)
 } 
 
 // Helper functions

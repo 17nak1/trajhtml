@@ -68,13 +68,10 @@ This function attempts to match trajectories of a deterministic model to data. T
               </tr>
               <tr>
                 <td class="variable"> Maximum time step</td>
-                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03846153846" ></td>
+                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03832991102"></td>
               </tr>
             </table>
-          </div>
-          <div>
-          <section id="setup">
-
+            <br>
         <div id="setup">
           <button style="background-color:#deeaee;width: 100%" class="accordion">rprocess/ skeleton</button>
             <div class="panel"> 
@@ -237,7 +234,6 @@ return lik'
           </label>
           <input id="tab2file2-upload" type="file" style="display:none;">
         </div>
-      </section>
     </div>
 <!-- THIRD TAB -->
     <div id="sobol" class="tab-pane fade">
@@ -347,7 +343,7 @@ return lik'
                 </td>
               </tr>
               <tr>
-                <td title="Limit the parameter during generating. 0: No limit; 1:keep the parameter in (0,1); 2: keep the parameter positive.">
+                <td title="Limit the parameter during generating in (0,1).">
                   flag bound
                 </td>
                 <td>
@@ -362,9 +358,9 @@ return lik'
                   parameter limits
                 </td>
                 <td>
-                  <input type="number" id="limit1" value="0">
+                  <input type="number" id="limit1R0" value="0">
                   to
-                  <input type="number" id="limit2" value="1">
+                  <input type="number" id="limit2R0" value="300">
                 </td>
               </tr>
               <tr>
@@ -372,26 +368,37 @@ return lik'
                   Number of points 
                 </td>
                 <td>
-                  <input type="number" id="NoPoints" value="0">
+                  <input type="number" id="NoPointsR0" value="1">
                 </td>
               </tr>
             </table>
           <div> <button id = "buttonRunR0" >Generate & Run</button></div>
         </div>
-    </div>
-      <button style="background-color:#f7786b;width: 100%" class="accordion">Amplitude</button>
+      </div>
+      <button style="background-color:#b1cbbb;width: 100%" class="accordion">Amplitude</button>
         <div class="panel" >
           <div id="table">
-            <table id="tableR0">
+            <table id="tableAmplitude">
               <tr>
                 <td>
                   log scale
                 </td>
                 <td>
                  <label class="switch"> 
-                     <input type="checkbox">
+                     <input id="logScaleAmplitude" type="checkbox">
                      <span class="slider round"></span>
                    </label> 
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating in (0,1).">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox" id = "flagAmplitude" checked="true">
+                     <span class="slider round"></span>
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -399,39 +406,47 @@ return lik'
                   parameter limits
                 </td>
                 <td>
-                  <input type="number" name="param 1 limits" value="0">
+                  <input type="number" id="limit1Amplitude" value="0">
                   to
-                  <input type="number" name="param 1 limits" value="1">
+                  <input type="number" id="limit2Amplitude" value="1">
                 </td>
               </tr>
               <tr>
-                <td title="Limit the parameter during generating. 0: No limit; 1:keep the parameter in (0,1); 2: keep the parameter positive.">
-                  flag bound
+                <td>
+                  Number of points 
                 </td>
                 <td>
-                  <label class="switch"> 
-                     <input type="checkbox">
-                     <span class="slider round"></span>
-                   </label>
+                  <input type="number" id="NoPointsAmplitude" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button>Run</button></div>
+          <div> <button id = "buttonRunAmplitude" >Generate & Run</button></div>
         </div>
-    </div>
-      <button style="background-color:#b1cbbb;width: 100%" class="accordion">Mu</button>
+      </div>
+      <button style="background-color:#eea29a  ;width: 100%" class="accordion">Mu</button>
         <div class="panel" >
           <div id="table">
-            <table id="tableR0">
+            <table id="tableMu">
               <tr>
                 <td>
                   log scale
                 </td>
                 <td>
                  <label class="switch"> 
-                     <input type="checkbox">
+                     <input id="logScaleMu" type="checkbox">
                      <span class="slider round"></span>
                    </label> 
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating in (0,1).">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox" id = "flagMu" checked="true">
+                     <span class="slider round"></span>
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -439,39 +454,47 @@ return lik'
                   parameter limits
                 </td>
                 <td>
-                  <input type="number" name="param 1 limits" value="0">
+                  <input type="number" id="limit1Mu" value="0">
                   to
-                  <input type="number" name="param 1 limits" value="1">
+                  <input type="number" id="limit2Mu" value="1">
                 </td>
               </tr>
               <tr>
                 <td>
-                  flag bound
+                  Number of points 
                 </td>
                 <td>
-                  <label class="switch"> 
-                     <input type="checkbox">
-                     <span class="slider round"></span>
-                   </label>
+                  <input type="number" id="NoPointsMu" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button>Run</button></div>
+          <div> <button id = "buttonRunMu" >Generate & Run</button></div>
         </div>
-    </div>
-      <button style="background-color:#eea29a;width: 100%" class="accordion">Rho</button>
+      </div>
+      <button style="background-color:#F2D7D5;width: 100%" class="accordion">Rho</button>
         <div class="panel" >
           <div id="table">
-            <table id="tableR0">
+            <table id="tableRho">
               <tr>
                 <td>
                   log scale
                 </td>
                 <td>
                  <label class="switch"> 
-                     <input type="checkbox">
+                     <input id="logScaleRho" type="checkbox">
                      <span class="slider round"></span>
                    </label> 
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating in (0,1).">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox" id = "flagRho" checked="true">
+                     <span class="slider round"></span>
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -479,39 +502,47 @@ return lik'
                   parameter limits
                 </td>
                 <td>
-                  <input type="number" name="param 1 limits" value="0">
+                  <input type="number" id="limit1Rho" value="0">
                   to
-                  <input type="number" name="param 1 limits" value="1">
+                  <input type="number" id="limit2Rho" value="1">
                 </td>
               </tr>
               <tr>
                 <td>
-                  flag bound
+                  Number of points 
                 </td>
                 <td>
-                  <label class="switch"> 
-                     <input type="checkbox">
-                     <span class="slider round"></span>
-                   </label>
+                  <input type="number" id="NoPointsRho" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button>Run</button></div>
+          <div> <button id = "buttonRunRho" >Generate & Run</button></div>
         </div>
-    </div>
-      <button style="background-color:#deeaee;width: 100%" class="accordion">Psi</button>
+      </div>
+      <button style="background-color:#BCE6BF;width: 100%" class="accordion">Psi</button>
         <div class="panel" >
           <div id="table">
-            <table id="tableR0">
+            <table id="tablePsi">
               <tr>
                 <td>
                   log scale
                 </td>
                 <td>
                  <label class="switch"> 
-                     <input type="checkbox">
+                     <input id="logScalePsi" type="checkbox">
                      <span class="slider round"></span>
                    </label> 
+                </td>
+              </tr>
+              <tr>
+                <td title="Limit the parameter during generating in (0,1).">
+                  flag bound
+                </td>
+                <td>
+                  <label class="switch"> 
+                     <input type="checkbox" id = "flagPsi">
+                     <span class="slider round"></span>
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -519,27 +550,24 @@ return lik'
                   parameter limits
                 </td>
                 <td>
-                  <input type="number" name="param 1 limits" value="0">
+                  <input type="number" id="limit1Psi" value="0">
                   to
-                  <input type="number" name="param 1 limits" value="1">
+                  <input type="number" id="limit2Psi" value="1">
                 </td>
               </tr>
               <tr>
                 <td>
-                  flag bound
+                  Number of points 
                 </td>
                 <td>
-                  <label class="switch"> 
-                     <input type="checkbox">
-                     <span class="slider round"></span>
-                   </label>
+                  <input type="number" id="NoPointsPsi" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button>Generate & Run</button></div>
+          <div> <button id = "buttonRunPsi" >Generate & Run</button></div>
         </div>
-    </div>
-    <button>Combine</button>
+      </div>
+    <button id = "combineButton">Combine</button>
     </div>
   </div>
 </div>

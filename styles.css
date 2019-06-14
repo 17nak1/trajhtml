@@ -210,18 +210,7 @@ input::-webkit-inner-spin-button {
   /*margin: 5px 0px;*/
   font-weight: normal;
 }
-/*p{
-  text-align: justify;
-  max-width: 800px;
-  margin: auto;
-  margin-bottom: 10px;
-}
-p.equation{
-  font-size: 0.85rem;
-  text-align:left;
-  margin-left: 7%;
-  margin-bottom: 15px;
-}*/
+
 #header{
   margin-bottom: 0px;
 }
@@ -242,7 +231,7 @@ h3#answer{
   text-align: center;
   margin-left:10px;
 }
-accordion {
+.accordion {
   background-color: #eee;
   color: #444;
   cursor: pointer;
@@ -253,9 +242,10 @@ accordion {
   outline: none;
   font-size: 15px;
   transition: 0.4s;
+  border-radius: 6px;
 }
 
-.active, .accordion:hover {
+.accordion:hover {
   background-color: #ccc;
 }
 

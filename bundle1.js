@@ -1,5 +1,50 @@
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 /**
+ *  @file      combineTables.js       This function clean, sort and combine tables in csv files.
+ *                                    runs : The array of parameters that wants to combine their tables.
+ *  @return                           A sorted table based on the "LogLik" column.
+ *  @reference                        Aaron A. King.
+ *  @author    Nazila Akhavan
+ *  @date      March 2019
+ */
+
+combineTables = {}
+
+combineTables.combine = function (runArray) {
+  let allSets = [] 
+  var newSet
+  for ( run = 0; run < runArray.length; run++){
+    var table = [], dataset = []
+    var table = runArray[run]
+    table.sort(sortFunction)
+
+    newSet = {}
+    table.forEach(function(arr){
+      newSet[arr.join("|")] = arr
+    })
+    dataset = Object.keys(newSet).map(function(k){
+      return newSet[k]
+    })
+    allSets.push(...dataset) 
+  }
+
+  allSets.sort(sortFunction)
+  return allSets
+}
+
+// Helper function
+function sortFunction(a, b) {
+  if (Number(a[a.length - 1]) === Number(b[a.length - 1])) {
+    return 0
+  }
+  else {
+    return (Number(a[a.length - 1]) < Number(b[a.length - 1])) ? 1 : -1;
+  }
+}
+
+module.exports = combineTables
+},{}],2:[function(require,module,exports){
+/**
  *  @file         generateSets.js     This function can generate set as initial parameters for calculation in trajMatch. 
  *  @return                           Considering the dataset and the number of elements in paramIndexArray, it generates
  *                                    a table as a csv file for each element.
@@ -25,23 +70,26 @@ require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c=
  */
 
 
-// generateSets ={} 
+let generateSets ={} 
 
-generateSets = function (data, parameterIndex, logScale, paramLimits, flagBound, numberOfPoints) {
+generateSets.generateSet = function (data, paramIndex, logScale, paramLimits, flagBound, numberOfPoints) {
   let dataset = []
-  for ( let i = 0; i < data.length; i++) {
-    if(data[i] !== '') {
+
+  for ( let i = 1; i < data.length; i++) {
+    if(data[i].length) {
       dataset.push(data[i])
     }
   }
-  
-  var tolerance = 50
-  var numberOfProfile = 50
-  // var numberOfPoints = 1000
-  
-  var indexInc = 0
-  var indexMult = 1
-  var s = 0.01
+  let tolerance = 50
+  let numberOfProfile = 50
+    
+  let indexInc = 0
+  let indexMult = 1
+  let s = 0.01
+  let step = 0, ltemp = 0, temp = [], temp2 = []
+  let newDataset =[], paramArray = []
+  let set1 = [], paramProfile = []
+  let Maxloglik
   
   // Indicies for parameters. 
   const paramObject = {
@@ -59,119 +107,106 @@ generateSets = function (data, parameterIndex, logScale, paramLimits, flagBound,
   LogLikIndex : 11
   }
   
-  let Maxloglik
   // Reorder dataset descending based on LogLik column and find the maximum LogLik
   dataset.sort(sortFunction)
   Maxloglik = dataset[0][paramObject.LogLikIndex]
   
-  // Start calculation for each parameter(generating parameter) in paramIndexArray and generate a set based on this parameter.
-  for ( index = 0; index < paramIndexArray.length; index++) {
-    var paramIndex = paramIndexArray[index]
-    var paramLimits , logScale, flagBound
-    [paramLimits, logScale, flagBound] = determineRunProperties (paramIndex, paramObject)
-
-    var step = 0, ltemp = 0, temp = [], temp2 = []
-    var newDataset =[], paramArray = []
-    var set1 = [], paramProfile = []
-  
-    // Calculate the step size for the generating parameter limits interval 
-    if (logScale === 1) {
-      if (paramLimits[0] <= 0 || paramLimits[1] <= 0) {
-        throw "The lower(upper) bound for the parameter is not positive."
-      }
-      step = (Math.log(paramLimits[1]) - Math.log(paramLimits[0])) / (numberOfProfile - 1)
-      ltemp = Math.log(paramLimits[0])
+  // Start calculation for the parameter(generating parameter) and generate a set based on this parameter.
+  // Calculate the step size for the generating parameter limits interval 
+  if (logScale === 1) {
+    if (paramLimits[0] <= 0 || paramLimits[1] <= 0) {
+      throw "The lower(upper) bound for the parameter is not positive."
+    }
+    step = (Math.log(paramLimits[1]) - Math.log(paramLimits[0])) / (numberOfProfile - 1)
+    ltemp = Math.log(paramLimits[0])
+  } else {
+    step = (paramLimits[1] - paramLimits[0]) / (numberOfProfile - 1)
+    ltemp = paramLimits[0]
+  }
+  // newDataset include rows that has LogLik in [LogLik - tolerance, LogLik] from which Paramprofile will be made. 
+  // temp and tem2 are temperory matrix that include noise to the generating parameter in different ways.
+  for (i = 0; i < dataset.length; i++ ) { 
+    if (dataset[i][paramObject.LogLikIndex] > Maxloglik - tolerance && dataset[i][paramObject.LogLikIndex] < 0) {
+      newDataset.push((dataset[i]).map(Number))
     } else {
-      step = (paramLimits[1] - paramLimits[0]) / (numberOfProfile - 1)
-      ltemp = paramLimits[0]
+      i = dataset.length
     }
-    // newDataset include rows that has LogLik in [LogLik - tolerance, LogLik] from which Paramprofile will be made. 
-    // temp and tem2 are temperory matrix that include noise to the generating parameter in different ways.
-    for (i = 0; i < dataset.length; i++ ) { 
-      if (dataset[i][paramObject.LogLikIndex] > Maxloglik - tolerance && dataset[i][paramObject.LogLikIndex] < 0) {
-        newDataset.push((dataset[i]).map(Number))
-      } else {
-        i = dataset.length
-      }
+  }    
+  // Create a sequence of points in the interval of the generating parameter
+  for (i = 0; i < numberOfProfile; i++) {
+    if (logScale === 1) {
+      paramArray.push(Math.exp(ltemp))
+    } else {
+      paramArray.push(Number(ltemp))
     }
-    
-    // Create a sequence of points in the interval of the generating parameter
-    for (i = 0; i < numberOfProfile; i++) {
-      if (logScale === 1) {
-        paramArray.push(Math.exp(ltemp))
-      } else {
-        paramArray.push(Number(ltemp))
-      }
-      ltemp += step
-    }
-    
-    for (q = 1; q < paramArray.length; q++) {
-      set1 = []
-      for (j =0; j < newDataset.length; j++) {
-        if (newDataset.length > 0){
-          if (newDataset[j][paramIndex] >= paramArray[q - 1] && newDataset[j][paramIndex] <= paramArray[q]) {
-            set1.push(newDataset[j])
-          }
+    ltemp += step
+  }    
+  for (q = 1; q < paramArray.length; q++) {
+    set1 = []
+    for (j =0; j < newDataset.length; j++) {
+      if (newDataset.length > 0){
+        if (newDataset[j][paramIndex] >= paramArray[q - 1] && newDataset[j][paramIndex] <= paramArray[q]) {
+          set1.push(newDataset[j])
         }
       }
-      if(set1.length > 0) {
-        set1.sort(sortFunction) 
-        paramProfile.push(set1[0])
-      } 
     }
-    
-    temp = paramProfile.map(row => [].concat(row))
-    temp2 = paramProfile.map(row => [].concat(row))
-    
-    for (q = 1; q <= Math.ceil(numberOfPoints / temp.length); q++) {
-      if (indexMult === 1) {
-        if (indexInc === -1) {
+    if(set1.length > 0) {
+      set1.sort(sortFunction) 
+      paramProfile.push(set1[0])
+    } 
+  }    
+  temp = paramProfile.map(row => [].concat(row))
+  temp2 = paramProfile.map(row => [].concat(row))    
+  for (q = 1; q <= Math.ceil(numberOfPoints / temp.length); q++) {
+    if (indexMult === 1) {
+      if (indexInc === -1) {
+        nextDivide(temp2, paramIndex, s, paramProfile)
+      } else if (indexInc === 1) {
+        nextMultiply(temp, paramIndex, s, paramProfile)
+      } else {
+        if (q % 2 === 1) {
           nextDivide(temp2, paramIndex, s, paramProfile)
-        } else if (indexInc === 1) {
+        } else {
           nextMultiply(temp, paramIndex, s, paramProfile)
-        } else {
-          if (q % 2 === 1) {
-            nextDivide(temp2, paramIndex, s, paramProfile)
-          } else {
-            nextMultiply(temp, paramIndex, s, paramProfile)
-          }
         }
+      }
+    } else {
+      if (indexInc === -1) {
+        nextSubtract(temp2, paramIndex, s, paramProfile)
+      } else if (indexInc === 1) {
+        nextAdd(temp, paramIndex, s, paramProfile)
       } else {
-        if (indexInc === -1) {
+        if (q % 2 === 1) {
           nextSubtract(temp2, paramIndex, s, paramProfile)
-        } else if (indexInc === 1) {
-          nextAdd(temp, paramIndex, s, paramProfile)
         } else {
-          if (q % 2 === 1) {
-            nextSubtract(temp2, paramIndex, s, paramProfile)
-          } else {
-            nextAdd(temp, paramIndex, s, paramProfile)
-          }
+          nextAdd(temp, paramIndex, s, paramProfile)
         }
-      }
-    }
-  // We need exactly 'numberOfPoints' rows
-    paramProfile.splice(numberOfPoints)
-  
-  // Delete LogLik column and check the flagBounds
-    for (i = 0; i < paramProfile.length; i++) {
-      paramProfile[i].pop()
-    }
-    if (flagBound === 1) {
-      for (i = 0; i < paramProfile.length; i++) {
-        if(paramProfile[i][paramIndex] > 1 - 1e-6) {
-          paramProfile[i][paramIndex] = 1 - 1e-6
-        } else if (paramProfile[i][paramIndex] < 1e-6) {
-        paramProfile[i][paramIndex] = 1e-6
-        }
-      }
-    } else if (flagBound === 2) {
-      for (i = 0; i < paramProfile.length; i++) {
-        if (paramprofile[i][paramIndex] < 1e-6)
-          paramProfile[i][paramIndex] =  1e-6
       }
     }
   }
+// We need exactly 'numberOfPoints' rows
+  paramProfile.splice(numberOfPoints)  
+// Delete LogLik column and check the flagBounds
+  for (i = 0; i < paramProfile.length; i++) {
+     paramProfile[i].pop()
+  }
+  
+  if (flagBound === 1) {
+    for (i = 0; i < paramProfile.length; i++) {
+      if(paramProfile[i][paramIndex] > 1 - 1e-6) {
+        paramProfile[i][paramIndex] = 1 - 1e-6
+      } else if (paramProfile[i][paramIndex] < 1e-6) {
+      paramProfile[i][paramIndex] = 1e-6
+      }
+    }
+  } else if (flagBound === 2) {
+    for (i = 0; i < paramProfile.length; i++) {
+      if (paramprofile[i][paramIndex] < 1e-6)
+        paramProfile[i][paramIndex] =  1e-6
+    }
+  }
+  paramProfile.splice(0,0,['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0'])
+  return(paramProfile)
 } 
 
 // Helper functions
@@ -216,13 +251,18 @@ module.exports = generateSets
 
 
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 
 var mathLib = {}
-var erf = require('math-erf')
 var seedrandom = require('seedrandom')
-var rng = seedrandom('43553') 
+var erf = require('math-erf')
+var rng = seedrandom('43553')
 
+/** Distribution function for the normal distribution with mean equal to mean and standard deviation equal to sd
+  *  x : vector of quantiles.
+  *  lower_tail :logical, if TRUE (default), probabilities are P[X ≤ x] otherwise, P[X > x].
+  *  give_log : logical, if TRUE, probabilities p are given as log(p).
+  */
 mathLib.pnorm = function (x, mu = 0, sd = 1, lower_tail = true, give_log = false) {
   if (sd < 0) {
     return NaN
@@ -237,11 +277,16 @@ mathLib.pnorm = function (x, mu = 0, sd = 1, lower_tail = true, give_log = false
   return ans
 }
 
+// random generation for the normal distribution
 mathLib.rnorm = function (mu = 0, sd = 1) {
   var val = Math.sqrt(-2 * Math.log(rng())) * Math.cos(2 * Math.PI * rng())
   return val * sd + mu
 }
 
+/** Density function for the Poisson distribution with parameter lambda.
+  *  x : vector of (non-negative integer) quantiles.
+  *  lambda : vector of (non-negative) means.
+  */
 mathLib.dpois = function (x, lambda) {
   let ans, total = 0
   if (isNaN(x) || isNaN(lambda) || lambda < 0) {
@@ -261,58 +306,9 @@ mathLib.dpois = function (x, lambda) {
   let logAns = ans - total
   return Math.exp(logAns)
 }
-mathLib.interpolator = function (points) {
-  var first, n = points.length - 1,
-    interpolated,
-    leftExtrapolated,
-    rightExtrapolated;
-
-  if (points.length === 0) {
-    return function () {
-      return 0
-    }
-  }
-
-  if (points.length === 1) {
-    return function () {
-      return points[0][1]
-    }
-  }
-
-  points = points.sort(function (a, b) {
-    return a[0] - b[0]
-  })
-  first = points[0]
-
-  leftExtrapolated = function (x) {
-    var a = points[0], b = points[1];
-    return a[1] + (x - a[0]) * (b[1] - a[1]) / (b[0] - a[0])
-  }
-
-  interpolated = function (x, a, b) {
-    return a[1] + (x - a[0]) * (b[1] - a[1]) / (b[0] - a[0])
-  }
-
-  rightExtrapolated = function (x) {
-    var a = points[n - 1], b = points[n];
-    return b[1] + (x - b[0]) * (b[1] - a[1]) / (b[0] - a[0])
-  }
-
-  return function (x) {
-    var i
-    if (x <= first[0]) {
-      return leftExtrapolated(x)
-    }
-    for (i = 0; i < n; i += 1) {
-      if (x > points[i][0] && x <= points[i + 1][0]) {
-        return interpolated(x, points[i], points[i + 1])
-      }
-    }
-    return rightExtrapolated(x);
-  }
-}
-
-
+/** Vector calculus
+  * sum: adding; sp: scalar product; abs : Euclidean norm.
+  */
 sum = function (array) {
   var sum = []  
   for(i = 0; i < array[0].length; i++){
@@ -340,8 +336,15 @@ abs = function (array) {
   return Math.sqrt(sum)
 }
 
-
-mathLib.odeMethod = function (method, func, N, t, h, params, pop, birthrate, tol = 1e4) {
+/** Methods for integrate. 
+  * method : Includes euler, rk4, rkf45.
+  * func : ODE function.
+  * N : Initial point
+  * t: time
+  * h: time step
+  * Note: variables "params, pop, birthrate" are added to have consistancy with my specific integrate function.
+ */
+mathLib.odeMethod = function (method, func, N, t, h, params, pop, birthrate) {
   let tempArray
   let k1, k2, k3, k4, k5, k6, y, z, s
   let a, b, b2, c, d, out
@@ -381,31 +384,7 @@ mathLib.odeMethod = function (method, func, N, t, h, params, pop, birthrate, tol
     y = sum ([N, sp (h *  b[1], k1), sp (h * b[2], k2) ,sp(h * b[3], k3), sp (h *  b[4], k4), sp (h * b[5], k5) ,sp(h * b[6], k6)])
     z = sum ([N, sp (h *  b2[1], k1), sp (h * b2[2], k2) ,sp(h * b2[3], k3), sp (h *  b2[4], k4), sp (h * b2[5], k5) ,sp(h * b2[6], k6)])
     return z
-    
-  case 'rk45dp7':
-    c = [0, 0, 1/5, 3/10, 4/5, 8/9, 1, 1]
-    a = [[0,0, 0, 0, 0, 0, 0],
-            [0,0, 0, 0, 0, 0, 0],
-            [0, 1/5, 0, 0, 0, 0, 0],
-            [0, 3/40, 9/40, 0, 0, 0, 0],
-            [0, 44/45, -56/15, 32/9, 0, 0, 0],
-            [0, 19372/6561, -25360/2187, 64448/6561, -212/729, 0, 0],
-            [0, 9017/3168, -355/33, 46732/5247, 49/176, -5103/18656, 0],
-            [0, 35/384, 0, 500/1113, 125/192, -2187/6784, 11/84]]      
-    b = [0, 5179/57600, 0, 7571/16695, 393/640, -92097/339200, 187/2100, 1/40]
-    b2 = [0, 35/384, 0, 500/1113, 125/192, -2187/6784, 11/84, 0]
-    d = [-12715105075/11282082432, 0, 87487479700/32700410799, -10690763975/1880347072, 701980252875/199316789632, -1453857185/822651844, 69997945/29380423]  
-    k1 = func(t          , N, params, pop, birthrate)
-    k2 = func(t + c[2] * h , sum([N , sp(h * a[2][1] , k1)]), params, pop, birthrate)
-    k3 = func(t + c[3] * h , sum([N , sp(h * a[3][1] , k1), sp(h * a[3][2], k2)]), params, pop, birthrate)
-    k4 = func(t + c[4] * h , sum([N , sp(h * a[4][1], k1),  sp(h *a[4][2], k2), sp(h *a[4][3], k3)]), params, pop, birthrate)
-    k5 = func(t + c[5] * h , sum([N , sp(h * a[5][1], k1), sp(h *a[5][2], k2), sp(h *a[5][3], k3), sp(h *a[5][4], k4)]), params, pop, birthrate)
-    k6 = func(t + c[6] * h , sum([N , sp(h * a[6][1], k1), sp(h *a[6][2], k2), sp(h *a[6][3], k3), sp(h *a[6][4], k4), sp(h *a[6][5], k5)]), params, pop, birthrate)
-    y = sum ([N, sp (h *  b[1], k1), sp (h * b[2], k2) ,sp(h * b[3], k3), sp (h *  b[4], k4), sp (h * b[5], k5) ,sp(h * b[6], k6)])
-    z = sum ([N, sp (h *  b2[1], k1), sp (h * b2[2], k2) ,sp(h * b2[3], k3), sp (h *  b2[4], k4), sp (h * b2[5], k5) ,sp(h * b2[6], k6)])
-    return z
-    
-  } 
+  }
 }
 
 
@@ -414,7 +393,7 @@ module.exports = mathLib
 
 
 
-},{"math-erf":9,"seedrandom":16}],3:[function(require,module,exports){
+},{"math-erf":10,"seedrandom":17}],4:[function(require,module,exports){
 
 snippet = {}
 let mathLib = require('./mathLib') 
@@ -570,7 +549,7 @@ snippet.rmeasure = function (H, rho, psi) {
 
 
 module.exports = snippet
-},{"./mathLib":2}],4:[function(require,module,exports){
+},{"./mathLib":3}],5:[function(require,module,exports){
 
   sobolData = {}
 /* Copyright (c) 2007 Massachusetts Institute of Technology
@@ -1454,7 +1433,7 @@ sobolData.MAXDEG = 12
      ]
 
   module.exports = sobolData;
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /* Copyright (c) 2007 Massachusetts Institute of Technology
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -1641,21 +1620,21 @@ sobolSeq.sobolDesign = function(lowerBounds, upperBounds, numberOfPoints) {
 }
 
 module.exports = sobolSeq
-},{"./sobolData.js":4}],6:[function(require,module,exports){
+},{"./sobolData.js":5}],7:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.NEGATIVE_INFINITY;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Number.POSITIVE_INFINITY;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -2081,7 +2060,7 @@ module.exports = Number.POSITIVE_INFINITY;
     exports.scale = scale;
 
 }));
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2436,7 +2415,7 @@ function erf( x ) {
 // EXPORTS //
 
 module.exports = erf;
-},{"const-ninf-float64":6,"const-pinf-float64":7,"math-evalpoly":12,"math-exp":13,"math-float64-set-low-word":14}],10:[function(require,module,exports){
+},{"const-ninf-float64":7,"const-pinf-float64":8,"math-evalpoly":13,"math-exp":14,"math-float64-set-low-word":15}],11:[function(require,module,exports){
 'use strict';
 
 // EVALPOLY //
@@ -2477,7 +2456,7 @@ function evalpoly( c, x ) {
 
 module.exports = evalpoly;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 /* jshint evil:true */
 'use strict';
 
@@ -2552,21 +2531,21 @@ function factory( c ) {
 // EXPORTS //
 
 module.exports = factory;
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = require( './evalpoly.js' );
 module.exports.factory = require( './factory.js' );
-},{"./evalpoly.js":10,"./factory.js":11}],13:[function(require,module,exports){
+},{"./evalpoly.js":11,"./factory.js":12}],14:[function(require,module,exports){
 'use strict';
 
 // EXPORTS //
 
 module.exports = Math.exp;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2629,7 +2608,7 @@ function setLowWord( x, low ) {
 
 module.exports = setLowWord;
 
-},{"./low.js":15}],15:[function(require,module,exports){
+},{"./low.js":16}],16:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -2651,7 +2630,7 @@ if ( isLittleEndian === true ) {
 
 module.exports = LOW;
 
-},{"utils-is-little-endian":25}],16:[function(require,module,exports){
+},{"utils-is-little-endian":26}],17:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
 //
 // Usage:
@@ -2713,7 +2692,7 @@ sr.tychei = tychei;
 
 module.exports = sr;
 
-},{"./lib/alea":17,"./lib/tychei":18,"./lib/xor128":19,"./lib/xor4096":20,"./lib/xorshift7":21,"./lib/xorwow":22,"./seedrandom":23}],17:[function(require,module,exports){
+},{"./lib/alea":18,"./lib/tychei":19,"./lib/xor128":20,"./lib/xor4096":21,"./lib/xorshift7":22,"./lib/xorwow":23,"./seedrandom":24}],18:[function(require,module,exports){
 // A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
 // http://baagoe.com/en/RandomMusings/javascript/
 // https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
@@ -2829,7 +2808,7 @@ if (module && module.exports) {
 
 
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
 // Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
@@ -2934,7 +2913,7 @@ if (module && module.exports) {
 
 
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -3017,7 +2996,7 @@ if (module && module.exports) {
 
 
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
 // This fast non-cryptographic random number generator is designed for
@@ -3165,7 +3144,7 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 // A Javascript implementaion of the "xorshift7" algorithm by
 // François Panneton and Pierre L'ecuyer:
 // "On the Xorgshift Random Number Generators"
@@ -3264,7 +3243,7 @@ if (module && module.exports) {
 );
 
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 // A Javascript implementaion of the "xorwow" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
 
@@ -3352,7 +3331,7 @@ if (module && module.exports) {
 
 
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*
 Copyright 2014 David Bau.
 
@@ -3604,7 +3583,7 @@ if ((typeof module) == 'object' && module.exports) {
   Math    // math: package containing random, pow, and seedrandom
 );
 
-},{"crypto":26}],24:[function(require,module,exports){
+},{"crypto":27}],25:[function(require,module,exports){
 'use strict';
 
 var ctors = {
@@ -3617,7 +3596,7 @@ var ctors = {
 
 module.exports = ctors;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 // MODULES //
@@ -3655,53 +3634,86 @@ function isLittleEndian() {
 
 module.exports = isLittleEndian();
 
-},{"./ctors.js":24}],26:[function(require,module,exports){
+},{"./ctors.js":25}],27:[function(require,module,exports){
 
 },{}],"traj_match":[function(require,module,exports){
-/**
+/*
+ * Trajectory matching
+ *   Estimation of parameters for deterministic models
+ *
+ *   In trajectory matching, one attempts to minimize the discrepancy between a model's predictions and data under the assumption that the latent state process is deterministic
+ *   and all discrepancies between model and data are due to measurement error.
+ *   The measurement model likelihood (dmeasure), or rather its negative, is the natural measure of the discrepancy.
+ *
+ *   Trajectory matching is a generalization of the traditional nonlinear least squares approach.
+ *
+ *   Nelder mead optimization method is used to adjust model parameters to minimize the discrepancies between the power spectrum of model simulations and that of the data.
+ *
+ *
+ *  @return
+ *   loglik constructs a stateful objective function for spectrum matching. In particular, this function takes a single numeric-vector argument that is assumed to contain
+ *   the parameters named in 'estimated', in that order.
+ *   When called, it will return the negative log likelihood.
+ *   Each time it is called, it will remember the values of the parameters and its estimate of the log likelihood.
+ *
+ *  @references
+ *   traj_match.R by Aaron A. King. 'https://github.com/kingaa/pomp/blob/abc552b335319bd36b21d3313305c89e97f48f68/R/traj_match.R'
  *  @file       traj.js        This function attempts to match trajectories of a model's deterministic skeleton to data.
- *                             Trajectory matching is equivalent to maximum likelihood estimatedation under the assumption 
+ *                             Trajectory matching is equivalent to maximum likelihood estimatedation under the assumption
  *                             that process noise is entirely absent, i.e., that all stochasticity is measurement error.
  *                             Accordingly, this method uses only the skeleton and dmeasure components of a POMP model.
  *
- *  @author     Nazila Akhavan
+ *  @author     Nazila Akhavan, Christopher Roy
  *  @date       Jan 2019
+ *
+ * Here are some extra variable definitions for your depth of understanding.
+ * birthrateData : Linear interpolation for birth rates.
+ * populationData: Linear interpoplation for population.
+ * dataCovar     : Matrix created in "creadataStartTimeSet.R".
+ * dataCases     : Matrix created in "creadataStartTimeSet.R".
+ * params        : Array of parameters and initial states i.e. [R0, amplitude, gamma, mu, sigma, rho, psi, S_0, E_0, I_0, R_0]
+ * times         : Array of 2 values, t0 and start time in dataCases
+ * index         : Array with value 1 at the place of the parameters who are going to be estimated.
+ * place         : Array include the index of parameters who are going to be estimated.
+ * estimated     : Array of initial value of the parameters who are going to be estimated.
+ * deltaT        : It is considered biweekly (2/52).
+ * states        : Empty array for calculated states.
+ * solution      : Include the result of  the optimizer function using Nelder Mead method.
  */
 
-// let linearInterpolator = require('linear-interpolator/node_main')
+
+let combineTables = require('./combineTables.js')
+let generateSets = require('./generateSets.js')
 let snippet = require('./modelSnippet.js')
+let sobolSeq = require('./sobolSeq.js')
 let mathLib = require('./mathLib')
 let fmin    = require('fmin')
-let sobolSeq = require('./sobolSeq.js')
-let generateSets = require('./generateSets.js')
 
-/**
-  * interpolBirth : Linear interpolation for birth rates.
-  * interpolPopulation   : Linear interpoplation for population.
-  * dataCovar     : Matrix created in "creadataStartTimeSet.R". 
-  * dataCases     : Matrix created in "creadataStartTimeSet.R". 
-  * params        : Array of parameters and initial states i.e. [R0, amplitude, gamma, mu, sigma, rho, psi, S_0, E_0, I_0, R_0]
-  * times         : Array of 2 values, t0 and start time in dataCases
-  * index         : Array with value 1 at the place of the parameters who are going to be estimated.
-  * place         : Array include the index of parameters who are going to be estimated.
-  * estimated     : Array of initial value of the parameters who are going to be estimated.
-  * deltaT        : It is considered biweekly (2/52).
-  * states        : Empty array for calculated states.
-  * solution      : Include the result of  the optimizer function using Nelder Mead method.
-  */
+// Indicies for params. eg. params[MU] instead of params[3]
+const R0Index = 0
+const AMPLITUDE = 1
+const GAMMA = 2
+const MU = 3
+const SIGMA = 4
+const RHO = 5
+const PSI = 6
+
+
+/** Main entry point to user interface
+ */
 function traj_match (interpolPopulation, interpolBirth, dataCases, params, times, index, deltaT) { 
-  var tempIndex = 0
-  var estimated = []
-  var place = []
-  var solution
+  let tempIndex = 0,
+      estimated = [],
+      place = [],
+      solution
   
    //*Change the initial values of estimating parameters(with index one) to the log or logit scale.
-  // From those amplitude and rho (parameters number 1 and 5) are in logit scale and the rest are in log scale
+  // From those amplitude and rho are in logit scale and the rest are in log scale
   for (let i = 0; i < params.length; i++) {
     params[i] = Number(params[i])
-    if (index[i] === 1) {
+    if (index[i] === AMPLITUDE) {
       place.push(i)
-      if ((i === 1) || (i === 5)) {
+      if ((i === AMPLITUDE) || (i === RHO)) {
         estimated.push(Math.log(params[i] / (1 - params[i]))) //logit scale
       } else {
         estimated.push(Math.log(params[i])) //log scale
@@ -3709,12 +3721,11 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     }
   }
 
-
   //* Optimizer function using Nelder Mead method
   solution = fmin.nelderMead(logLik, estimated)
   for (let j = 0;j < params.length; j++) {
-    if (index[j] === 1) { // Using exp and expit to get back to the regular scale.
-      if ((j === 1) || (j === 5)){
+    if (index[j] === AMPLITUDE) { // Using exp and expit to get back to the regular scale.
+      if ((j === AMPLITUDE) || (j === RHO)){
         params[j] = 1/ (1 + Math.exp(-solution.x[tempIndex]))
       } else {
         params[j] = Math.exp(solution.x[tempIndex])
@@ -3723,7 +3734,6 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     }
   }
   
-
   //* calculate log likelihood
   function logLik (estimated) {
     var likvalue = 0
@@ -3731,7 +3741,7 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     var rho 
     var psi 
     for (let i = 0; i < estimated.length; i++) {
-      if ((place[i] === 1) || (place[i] === 5)) { //Change to the exp scale and let optimizer to search all real numbers.
+      if ((place[i] === AMPLITUDE) || (place[i] === RHO)) { //Change to the exp scale and let optimizer to search all real numbers.
         params[place[i]] = 1 / (1 + Math.exp(-estimated[i]))
       } else {
         params[place[i]] = Math.exp(estimated[i])
@@ -3748,13 +3758,12 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     ;console.log(params, loglik)
     return [-(loglik).toFixed(6)]
   }
-  // console.log(params, -solution.fx)
   return[params, -solution.fx]
 }
 
 //* ODE solver
 function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
-  var steps = 300 // Total number of steps in the Euler method
+  var steps = 200 // Total number of steps in the each interval.
   var t0 = times[0]
   var dataStartTime = times[1]
   var dataEndTime = times[2]
@@ -3767,7 +3776,7 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
   var Npre
 
   var N = snippet.initz(interpolPopulation(t0), params[7], params[8], params[9], params[10])
-  var  k = t0 , count
+  var k = t0 , count
   var flag = 0
   dt = deltaT
   while ( flag === 0 ) {
@@ -3777,7 +3786,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
       birthrate = interpolBirth(k + stp / steps * dt)
       N = mathLib.odeMethod('rkf45', snippet.skeleton, N, k + stp / steps * dt, 1 / steps * dt, params, pop, birthrate)
     }
-
     timetemp = k
     k += dt
     if (k > dataStartTime) {
@@ -3791,7 +3799,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
       arr.push(N[4])
     }
   }
-
   count = 0
   while (k < dataEndTime) {
     
@@ -3800,7 +3807,6 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
     } else {
       dt = deltaT
     }
-    
     N[4] = 0
     for (let stp = 0; stp < steps; stp++) { 
       pop = interpolPopulation(k + stp / steps * dt)
@@ -3816,8 +3822,9 @@ function integrate (interpolPopulation, interpolBirth, params, times, deltaT) {
 }
 module.exports = {
   traj_match : traj_match,
-  sobolSeq : sobolSeq, 
-  generateSets :generateSets
+  sobolSeq : sobolSeq,
+  generateSets :generateSets,
+  combineTables: combineTables
 }
 
-},{"./generateSets.js":1,"./mathLib":2,"./modelSnippet.js":3,"./sobolSeq.js":5,"fmin":8}]},{},[]);
+},{"./combineTables.js":1,"./generateSets.js":2,"./mathLib":3,"./modelSnippet.js":4,"./sobolSeq.js":6,"fmin":9}]},{},[]);
