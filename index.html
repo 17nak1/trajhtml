@@ -6,8 +6,13 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <!-- TODO: nazila. please replace with a mesage that you want. -->
+  <script src="https://portal.distributed.computer/etc/dcp-config.js"></script>
+  <script src='https://portal.distributed.computer/node_modules/dcp-client/dist/compute.min.js'></script>
+
   <script src="./bundle1.js"></script>
-  <script src="./Magic.js"></script>  
+  <script src="./ui.js"></script>  
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
   <link rel="stylesheet" type="text/css" href="./styles.css">
 
@@ -24,7 +29,6 @@
   <br>
 <div class="container">
   <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
-<!-- For data analysis we neeed to identify regions of parameter space such that proposed model be consistent with the data. -->
     <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
 
   <ul class="nav nav-tabs">
@@ -35,13 +39,29 @@
   </ul>
   <div class="tab-content">
     <div id="home" class="tab-pane fade in active">
-      <h3>What is trajectory matching?</h3>
-      <p>
-This function attempts to match trajectories of a deterministic model to data. Trajectory matching is equivalent to maximum likelihood estimation under the assumption that process noise is entirely absent, i.e., that all stochasticity is measurement error. </p>
-<!-- Parameter Estimation By Fitting The Trajectory Of A Model's Deterministic Skeleton To Data. -->
+        <h3>What is trajectory matching?</h3>
+        <p> Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error.  </p>
+        <h4>SEIR model</h4>
+        <p>Infectious diseases of humans have been well-documented in literature and historical
+       records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
+       population (rural or urban, aging or young, easy or difficult access to health care),
+       and the history that the community has had with the specific disease. Mathematical and statistical tools have been used to describe the dynamics of
+       infectious diseases. </p>
+        <p>The SEIR model is an extension of the SIR model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the        hosts have the following compartments available: susceptible, exposed, infected, recovered. Let's consider N(t) population at time t, then  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
+        <div>
+          <figure style="margin-left: 20%">
+            <img id="simulation" src="./data/SEIR.png" width="70%" height="60%" >
+            <figcaption >Figure 2: Simulations of the deterministic SEIR Model and its simple extension in the vaccine era. </figcaption> 
+          </figure>
+        </div>
+        
     <figure>
-      <img id="coil" src="./LondonData.png">
+      <img id="data" src="./data/LondonData.png">
            <figcaption style="text-align:center">Figure 1: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1945 to 1990. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption> 
+    </figure>
+    <figure style="margin-left: 20%">
+      <img id="simulation" src="./data/simulation.png" width="70%" height="60%" >
+           <figcaption style="text-align:center">Figure 2: Simulations of the deterministic SEIR Model and its simple extension in the vaccine era. </figcaption> 
     </figure>
     </div>
 <!-- SECOND TAB -->
@@ -179,7 +199,6 @@ dy[4] = gamma * I;
 return dy'
               </textarea>
             </div>
-            <br>
           <button style="background-color:#b1cbbb;width: 100%" class="accordion">rmeasure</button>
             <div class="panel">
               <textarea class="textarea">
@@ -310,7 +329,7 @@ return lik'
           <td >
             <table>
               <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
-              <td><input id= sobolPoint style="width:100px; border: 0; text-align: center;" type="number" value="2000"></td>
+              <td><input id= sobolPoint style="width:100px; border: 0; text-align: center;" type="number" value="1"></td>
             </table>
           </td>
         </tr>

@@ -1,0 +1,16 @@
+{
+  "name": "traj-chris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "traj.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fmin": "0.0.2",
+    "math-erf": "^1.0.0",
+    "seedrandom": "^2.4.4"
+  }
+}
