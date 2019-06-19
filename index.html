@@ -12,7 +12,7 @@
   <script src='https://portal.distributed.computer/node_modules/dcp-client/dist/compute.min.js'></script>
 
   <script src="./bundle1.js"></script>
-  <script src="./ui.js"></script>  
+  <script src="./ui.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
   <link rel="stylesheet" type="text/css" href="./styles.css">
 
@@ -25,9 +25,9 @@
     </div>
     <hr>
   </div>
-  <div id="spacer" style="margin-top: 130px"></div>   
+  <div id="spacer" style="margin-top: 130px"></div>
   <br>
-<div class="container">
+<div class="container" style="width: 80%">
   <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
     <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
 
@@ -37,67 +37,81 @@
     <li><a data-toggle="tab" href="#sobol">Initial Search</a></li>
     <li><a data-toggle="tab" href="#refinements">Refinements</a></li>
   </ul>
-  <div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
+  <div class="tab-content ">
+    <!-- FIRST TAB -->
+    <div id="home" class="tab-pane fade in active ">
         <h3>What is trajectory matching?</h3>
-        <p> Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error.  </p>
-        <h4>SEIR model</h4>
-        <p>Infectious diseases of humans have been well-documented in literature and historical
-       records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
-       population (rural or urban, aging or young, easy or difficult access to health care),
-       and the history that the community has had with the specific disease. Mathematical and statistical tools have been used to describe the dynamics of
-       infectious diseases. </p>
-        <p>The SEIR model is an extension of the SIR model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the        hosts have the following compartments available: susceptible, exposed, infected, recovered. Let's consider N(t) population at time t, then  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
-        <div>
+        <p> When dealing with large populations deterministic models are often used. In deterministic compartmental models, the transition rates from one compartment to another are mathematically expressed as derivatives. Hence the model is formulated using ordinary differential equations (ODE), Kermack WO [1927]. Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error. The R package <a href="https://kingaa.github.io/pomp/install.html">pomp </a> provides useful tools for trajectory matching. </p>
+        <h4>Model</h4>
+          <p>Infectious diseases of humans have been well-documented in literature and historical
+          records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
+          population (rural or urban, aging or young, easy or difficult access to health care),
+          and the history that the community has had with the specific disease. Mathematical and statistical tools have been used to describe the dynamics of
+          infectious diseases. </p>
+          <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
+          <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
+          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and reports between  \((t_1, t_2)\) is normally distributed that is similar to the over    disposal binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + (  \rho\, C(t_1, t_2))^2 )$$</p>
+          <div>
           <figure style="margin-left: 20%">
-            <img id="simulation" src="./data/SEIR.png" width="70%" height="60%" >
-            <figcaption >Figure 2: Simulations of the deterministic SEIR Model and its simple extension in the vaccine era. </figcaption> 
+            <img id="SEIR" src="./data/SEIR.png" width="70%" height="60%" >
+            <figcaption style="margin-left: 15%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
           </figure>
         </div>
-        
-    <figure>
-      <img id="data" src="./data/LondonData.png">
-           <figcaption style="text-align:center">Figure 1: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1945 to 1990. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption> 
-    </figure>
-    <figure style="margin-left: 20%">
-      <img id="simulation" src="./data/simulation.png" width="70%" height="60%" >
-           <figcaption style="text-align:center">Figure 2: Simulations of the deterministic SEIR Model and its simple extension in the vaccine era. </figcaption> 
-    </figure>
+        <h4>Tools for fitting the model</h4>
+        <p>Partially observed Markov process models consist of an unobserved Markov state process, connected to the data via a model of the observation (measurement) process. The process model is determined by the density \(P(x_n|x_{n−1})\) and the measurement process is determined by the density \(P(y_n|x_n)\).</p>
+        <div>
+          <figure style="margin-left: 20%">
+            <img id="pomp" src="./data/pomp.png" width="70%" height="40%" >
+            <figcaption style="margin-left: 28%">Figure 2: POMP model </figcaption>
+          </figure>
+        </div>
+        <br>
+        <p> Using process model, measurement model and initial point, trajectory matching can optimize the parameter of the model based on the maximum likihood  estimation and fit the model to the data. The result can be illustrated as an simulation.  </p>
+      <figure style="text-align: center;">
+        <img id="data" src="./data/LondonData.png">
+           <figcaption style="text-align:center">Figure 3: Data: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1945 to   1990. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption>
+      </figure>
+      <br>
+      <br>
+      <figure style="text-align: center;">
+        <img id="simulation" src="./data/simulation2.png" width="50%" height="50%" >
+          <figcaption style="text-align:center">Figure 4: Simulations of the deterministic SEIR Model and its simple extension in the vaccine era. </figcaption>
+      </figure>
     </div>
+    <br>
 <!-- SECOND TAB -->
     <div id="model" class="tab-pane fade">
+      <br>
       <div id="table">
-            <table id="table1">
-               <tr>
-                <td >Model parameters' name</td>
-                <td style="width: 400px"><input id= modelParameter style="width:100%;border: 0" type="text" value=' R0, amplitude, gamma, mu, sigma, rho ,psi' ></td>
-              </tr>
-              <tr>
-                <td class="variable"> States names</td>
-                <div>
-                  <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
-                </div>
-              </tr>
-              <tr>
-                <td class="variable"> Zero name(s)</td>
-                <td ><input id= zeroName style="width:100%;border: 0" type="text" value='H' ></td>
-              </tr>
-              <tr>
-                <td class="variable"> Time zero (t0)</td>
-                <td ><input id= modelt0 style="width:100%;border: 0" type="number" value="1940" ></td>
-              </tr>
-              <tr>
-                <td class="variable"> Maximum time step</td>
-                <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03832991102"></td>
-              </tr>
-            </table>
-            <br>
+        <table id="table1" style="margin:auto auto";>
+            <tr>
+            <td style="height:50px">Model parameters' name</td>
+            <td style="width: 400px"><input id= modelParameter style="width:100%;border: 0" type="text" value=' R0, amplitude, gamma, mu, sigma, rho ,psi' ></td>
+          </tr>
+          <tr>
+            <td class="variable" style="height:50px"> States names</td>
+            <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
+          </tr>
+          <tr>
+            <td class="variable" style="height:50px"> Zero name(s)</td>
+            <td ><input id= zeroName style="width:100%;border: 0" type="text" value='H' ></td>
+          </tr>
+          <tr>
+            <td class="variable" style="height:50px"> Time zero (t0)</td>
+            <td ><input id= modelt0 style="width:100%;border: 0" type="number" value="1940" ></td>
+          </tr>
+          <tr>
+            <td class="variable" style="height:50px"> Maximum time step</td>
+            <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03832991102"></td>
+          </tr>
+        </table>
+        <br>
         <div id="setup">
           <button style="background-color:#deeaee;width: 100%" class="accordion">rprocess/ skeleton</button>
-            <div class="panel"> 
+            <div class="panel">
               <textarea class="textarea">
 'var seas, vaccine, dy = [];
-var R0 = params[0], amplitude = params[1], gamma = params[2], mu = params[3], sigma = params[4]; 
+var R0 = params[0], amplitude = params[1], gamma = params[2], mu = params[3], sigma = params[4];
 var beta0 = R0 * (gamma + mu) * (sigma + mu) / sigma;
 var S = N[0], E = N[1], I = N[2], R = N[3];
 if (t < 1968)
@@ -237,28 +251,28 @@ return lik'
               </textarea>
             </div>
         </div>
-      </section>
-
+        <br>
+        <center>
+          <div id="setup" style="width: 350px;">
+            <tr>
+            <label id = "label-tab2file1" for="tab2file1-upload" class="custom-button">
+            Upload data covariate
+            </label>
+            <input id="tab2file1-upload" type="file" style="display:none;">
+            <label id = "label-tab2file2" for="tab2file2-upload" class="custom-button">
+            Upload data cases
+            </label>
+            <input id="tab2file2-upload" type="file" style="display:none;">
+            </tr>
           </div>
-          <section id="step">
-        <div>
-          <label id = "label-tab2file1" for="tab2file1-upload" class="custom-button" style="background-color:#2ed573">
-          Upload data covariate
-          </label>
-          <input id="tab2file1-upload" type="file" style="display:none;">
-        </div>
-        <div>
-          <label id = "label-tab2file2" for="tab2file2-upload" class="custom-button" style="background-color:#2ed573">
-          Upload data cases
-          </label>
-          <input id="tab2file2-upload" type="file" style="display:none;">
-        </div>
+        </center>
+      </div>
     </div>
 <!-- THIRD TAB -->
     <div id="sobol" class="tab-pane fade">
       <div id="table">
-      <table id="table1">
-        </tr> 
+      <table id="table1" style="margin:auto auto">
+        </tr>
         <tr>
           <td>
           <table id = sobolBound>
@@ -268,80 +282,94 @@ return lik'
               <td>upper bound</td>
             </tr>
             <tr>
-              <td > R0</td>
+              <td title= 'Basic reproduction number'> R0</td>
               <td > <input type="number" value="0"></td>
               <td> <input type="number" value="200"></td>
             </tr>
             <tr>
-              <td> amplitude</td>
+              <td title="Amplitude of seasonality"> amplitude</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1"></td>
             </tr>
             <tr>
-              <td>gamma</td>
+              <td title="Recovery rate">gamma</td>
               <td> <input type="number" value="73.05"></td>
               <td> <input type="number" value="73.05"></td>
             </tr>
             <tr>
-              <td>mu</td>
+              <td title="Death minus net immigration rate">mu</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1"></td>
             </tr>
             <tr>
-              <td>sigma</td>
+              <td title="Incubation rate">sigma</td>
               <td> <input type="number" value="45.66"></td>
               <td> <input type="number" value="45.66"></td>
             </tr>
             <tr>
-              <td>rho</td>
+              <td title="Reporting probability">rho</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1"></td>
             </tr>
             <tr>
-              <td>psi</td>
+              <td title="Reporting overdispersion">psi</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1"></td>
             </tr>
             <tr>
-              <td>S_0</td>
+              <td title="Initial fraction of susceptibles"> S_0 </td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="0.1"></td>
             </tr>
             <tr>
-              <td>E_0</td>
+              <td title="Initial fraction of exposed">E_0</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1e-4"></td>
             </tr>
             <tr>
-              <td>I_0</td>
+              <td title="Initial fraction of infected">I_0</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="1e-4"></td>
             </tr>
             <tr>
-              <td>R_0</td>
+              <td title="Initial fraction of recovered">R_0</td>
               <td> <input type="number" value="0"></td>
               <td> <input type="number" value="0.9"></td>
             </tr>
           </table>
         </td>
-        </tr>          
+        </tr>
         <tr>
           <td >
             <table>
-              <td  title="Integer; number of points to use. " class = "variable"> Number of points</td>
-              <td><input id= sobolPoint style="width:100px; border: 0; text-align: center;" type="number" value="1"></td>
+              <td  style="width:82px;" title="Integer; number of points to use." class = "variable"> Number of points</td>
+              <td><input id= "sobolPoint" style="width:361px; border: 0; text-align: center;" type="number" value="1"></td>
             </table>
           </td>
         </tr>
       </table>
       <br>
-      <div id="sobolButtonDiv"> <button id="sobolButton">Generate & Run</button></div>
+      <div id="sobolButtonDiv" style="text-align: center;">
+        <button class="custom-button-style-only" id="sobolButton">Generate & Run</button>
+      </div>
+
+      <div class="force-center">
+        <textarea id="special-log"></textarea>
+      </div>
     </div>
+    <!--div>
+      <table>
+       <tr>
+         <input id= "resultSobol" style="width:361px; border: 0; text-align: center;" type="number" value="Y">
+       </tr>
+      </table>
+    </div-->
     </div>
 <!-- FORTH TAB -->
     <div id="refinements" class="tab-pane fade">
+      <br>
       <div>
-          <label id = "label-tab4" for="tab4-upload" class="custom-button" style="background-color:#2ed573">
+          <label id = "label-tab4" for="tab4-upload" class="custom-button" style="padding-top: 5px">
           Upload initial points
           </label>
           <input id="tab4-upload" type="file" style="display:none;">
@@ -355,10 +383,10 @@ return lik'
                   log scale
                 </td>
                 <td>
-                 <label class="switch"> 
+                 <label class="switch">
                      <input id="logScaleR0" type="checkbox">
                      <span class="slider round"></span>
-                   </label> 
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -366,7 +394,7 @@ return lik'
                   flag bound
                 </td>
                 <td>
-                  <label class="switch"> 
+                  <label class="switch">
                      <input type="checkbox" id = "flagR0">
                      <span class="slider round"></span>
                    </label>
@@ -384,14 +412,18 @@ return lik'
               </tr>
               <tr>
                 <td>
-                  Number of points 
+                  Number of points
                 </td>
                 <td>
                   <input type="number" id="NoPointsR0" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button id = "buttonRunR0" >Generate & Run</button></div>
+          <div>
+            <center>
+              <button id="buttonRunR0" class="custom-button-style-only">Generate & Run</button>
+            </center>
+          </div>
         </div>
       </div>
       <button style="background-color:#b1cbbb;width: 100%" class="accordion">Amplitude</button>
@@ -403,10 +435,10 @@ return lik'
                   log scale
                 </td>
                 <td>
-                 <label class="switch"> 
+                 <label class="switch">
                      <input id="logScaleAmplitude" type="checkbox">
                      <span class="slider round"></span>
-                   </label> 
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -414,7 +446,7 @@ return lik'
                   flag bound
                 </td>
                 <td>
-                  <label class="switch"> 
+                  <label class="switch">
                      <input type="checkbox" id = "flagAmplitude" checked="true">
                      <span class="slider round"></span>
                    </label>
@@ -432,14 +464,18 @@ return lik'
               </tr>
               <tr>
                 <td>
-                  Number of points 
+                  Number of points
                 </td>
                 <td>
                   <input type="number" id="NoPointsAmplitude" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button id = "buttonRunAmplitude" >Generate & Run</button></div>
+          <div>
+            <center>
+              <button id="buttonRunAmplitude" class="custom-button-style-only">Generate & Run</button>
+            </center>
+          </div>
         </div>
       </div>
       <button style="background-color:#eea29a  ;width: 100%" class="accordion">Mu</button>
@@ -451,10 +487,10 @@ return lik'
                   log scale
                 </td>
                 <td>
-                 <label class="switch"> 
+                 <label class="switch">
                      <input id="logScaleMu" type="checkbox">
                      <span class="slider round"></span>
-                   </label> 
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -462,7 +498,7 @@ return lik'
                   flag bound
                 </td>
                 <td>
-                  <label class="switch"> 
+                  <label class="switch">
                      <input type="checkbox" id = "flagMu" checked="true">
                      <span class="slider round"></span>
                    </label>
@@ -480,14 +516,18 @@ return lik'
               </tr>
               <tr>
                 <td>
-                  Number of points 
+                  Number of points
                 </td>
                 <td>
                   <input type="number" id="NoPointsMu" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button id = "buttonRunMu" >Generate & Run</button></div>
+          <div>
+            <center>
+              <button id="buttonRunMu" class="custom-button-style-only">Generate & Run</button>
+            </center>
+          </div>
         </div>
       </div>
       <button style="background-color:#F2D7D5;width: 100%" class="accordion">Rho</button>
@@ -499,10 +539,10 @@ return lik'
                   log scale
                 </td>
                 <td>
-                 <label class="switch"> 
+                 <label class="switch">
                      <input id="logScaleRho" type="checkbox">
                      <span class="slider round"></span>
-                   </label> 
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -510,7 +550,7 @@ return lik'
                   flag bound
                 </td>
                 <td>
-                  <label class="switch"> 
+                  <label class="switch">
                      <input type="checkbox" id = "flagRho" checked="true">
                      <span class="slider round"></span>
                    </label>
@@ -528,14 +568,18 @@ return lik'
               </tr>
               <tr>
                 <td>
-                  Number of points 
+                  Number of points
                 </td>
                 <td>
                   <input type="number" id="NoPointsRho" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button id = "buttonRunRho" >Generate & Run</button></div>
+          <div>
+            <center>
+              <button id = "buttonRunRho"  class="custom-button-style-only">Generate & Run</button>
+            </center>
+          </div>
         </div>
       </div>
       <button style="background-color:#BCE6BF;width: 100%" class="accordion">Psi</button>
@@ -547,10 +591,10 @@ return lik'
                   log scale
                 </td>
                 <td>
-                 <label class="switch"> 
+                 <label class="switch">
                      <input id="logScalePsi" type="checkbox">
                      <span class="slider round"></span>
-                   </label> 
+                   </label>
                 </td>
               </tr>
               <tr>
@@ -558,7 +602,7 @@ return lik'
                   flag bound
                 </td>
                 <td>
-                  <label class="switch"> 
+                  <label class="switch">
                      <input type="checkbox" id = "flagPsi">
                      <span class="slider round"></span>
                    </label>
@@ -576,17 +620,21 @@ return lik'
               </tr>
               <tr>
                 <td>
-                  Number of points 
+                  Number of points
                 </td>
                 <td>
                   <input type="number" id="NoPointsPsi" value="1">
                 </td>
               </tr>
             </table>
-          <div> <button id = "buttonRunPsi" >Generate & Run</button></div>
+          <div>
+            <center>
+              <button id="buttonRunPsi" class="custom-button-style-only">Generate & Run</button>
+            </center>
+          </div>
         </div>
       </div>
-    <button id = "combineButton">Combine</button>
+    <button id="combineButton" class="custom-button">Combine</button>
     </div>
   </div>
 </div>

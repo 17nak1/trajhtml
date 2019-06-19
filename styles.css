@@ -58,7 +58,7 @@ div#table th, div#table td {
   text-align: center;
 }
 table#td{
-  padding-left: 5px; 
+  padding-left: 5px;
 }
 .row {
   display: flex;
@@ -67,6 +67,9 @@ table#td{
   max-width: 800px;
   margin: auto;
   margin-bottom: 10px;
+}
+.container {
+  padding-bottom: 80px;
 }
 /*.container {
   margin: auto;
@@ -124,9 +127,9 @@ div#bar {
   background-color: #2ed573;
   height: 100%;
   width: 0%;
-  text-align: center; 
+  text-align: center;
   line-height: 30px; /* To center it vertically */
-  color: white; 
+  color: white;
 }
 
 div#header,
@@ -151,7 +154,7 @@ div#fullGraph {
 }
 div#tableContainer {
   overflow-x: scroll;
-  
+
 }
 hr {
   margin-bottom: 0px;
@@ -197,9 +200,24 @@ input::-webkit-inner-spin-button {
   color: white;
   text-align: center;
   font-weight: bold;
-  background-color: #D3D3D3;
-    }
+  background-color: #58cea0;
+}
 
+.custom-button-style-only {
+  font-size: 13px;
+  margin-right: 20px;
+  padding: 4px;
+  cursor: pointer;
+  width: 150px;
+  box-shadow: none;
+  border-style: none;
+  border-radius: 6px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  background-color: #58cea0;
+  margin-top: 14px;
+}
 
 .authors, .date{
   display: block;
@@ -256,6 +274,11 @@ h3#answer{
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   margin: 1px 10% 1px 10%;
+}
+
+div#refinements div.panel.active {
+  max-height: 230px;
+  min-height: 230px;
 }
 
 /* The switch - the box around the slider */
@@ -322,6 +345,16 @@ input:checked + .slider:before {
 
 .textarea {
   width: 100%;
-  border: 0;
+  border: 1px solid #00000045;
   height:200px;
+}
+
+textarea#special-log {
+  min-width: 600px;
+  height: 280px;
+}
+
+.force-center {
+  margin-top: 20px;
+  text-align: center;
 }
