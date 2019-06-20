@@ -50,7 +50,7 @@
           infectious diseases. </p>
           <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
           <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
-          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
+          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and  \( \psi \) is reporting overdispersion. Reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
           <div>
           <figure style="margin-left: 20%">
             <img id="SEIR" src="./data/SEIR.png" width="60%" height="50%" >
@@ -352,16 +352,9 @@ return lik'
         <button class="custom-button-style-only" id="sobolButton">Generate & Run</button>
       </div>
       <div class="force-center">
-        <textarea id="special-log"></textarea>
+        <textarea class = "special-log" id="special-log-sobol"></textarea>
       </div>
     </div>
-    <!--div>
-      <table>
-       <tr>
-         <input id= "resultSobol" style="width:361px; border: 0; text-align: center;" type="number" value="Y">
-       </tr>
-      </table>
-    </div-->
     </div>
 <!-- FORTH TAB -->
     <div id="refinements" class="tab-pane fade">
@@ -422,6 +415,9 @@ return lik'
               <button id="buttonRunR0" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
+          <div class="force-center">
+            <textarea  class = "special-log"  id="special-log-R0"></textarea>
+          </div>
         </div>
       </div>
       <button style="background-color:#b1cbbb;width: 100%" class="accordion">Amplitude</button>
@@ -473,6 +469,9 @@ return lik'
             <center>
               <button id="buttonRunAmplitude" class="custom-button-style-only">Generate & Run</button>
             </center>
+          </div>
+          <div class="force-center">
+            <textarea  class = "special-log"  id="special-log-Amplitude"></textarea>
           </div>
         </div>
       </div>
@@ -526,6 +525,9 @@ return lik'
               <button id="buttonRunMu" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
+          <div class="force-center">
+            <textarea  class = "special-log"  id="special-log-Mu"></textarea>
+          </div>
         </div>
       </div>
       <button style="background-color:#F2D7D5;width: 100%" class="accordion">Rho</button>
@@ -578,6 +580,9 @@ return lik'
               <button id = "buttonRunRho"  class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
+          <div class="force-center">
+            <textarea  class = "special-log"  id="special-log-Rho"></textarea>
+          </div>
         </div>
       </div>
       <button style="background-color:#BCE6BF;width: 100%" class="accordion">Psi</button>
@@ -629,6 +634,9 @@ return lik'
             <center>
               <button id="buttonRunPsi" class="custom-button-style-only">Generate & Run</button>
             </center>
+          </div>
+          <div class="force-center">
+            <textarea  class = "special-log"  id="special-log-Psi"></textarea>
           </div>
         </div>
       </div>

@@ -351,7 +351,7 @@ input:checked + .slider:before {
   height:200px;
 }
 
-textarea#special-log {
+.special-log {
   min-width: 600px;
   height: 280px;
 }

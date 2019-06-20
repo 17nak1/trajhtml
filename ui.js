@@ -121,26 +121,8 @@ function start () {
       sobolButton.innerText = 'Running'
       times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 1][0])];
       // index = [1,1,0,1,1,1]
-      // TO DO: download be available during the run
-      // for ( let j = 0; j < SobolNumberOfPoints; j++) {
-      //   var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[j], times, index, modelTimestep)
-      //   resSobol.push(ans)
-      // }
-      
-      test(0)
-      function test(i){
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, index, modelTimestep)
-        resSobol.push(ans)
-        if( i < SobolNumberOfPoints - 1){
-        specialLog(ans)
-        sobolButton.onclick = function () {Csv(resSobol)}
-        setTimeout(function () {test(i+1)},0)
-        } else {
-          specialLog(ans)
-          sobolButton.innerText = 'Download'
-          sobolButton.onclick = function () {Csv(resSobol)}
-        }
-      }
+      specialLog = document.querySelector('#special-log-sobol');
+      test(interpolPopulation, interpolBirth, dataCases, sobolSet, times, index, modelTimestep, 0, resSobol, sobolButton, specialLog)
     }
   }
 
@@ -188,7 +170,7 @@ function start () {
         alert('Upload initial data!')
       }
     } else {
-      resR0 = []
+      resR0 = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
       logScale = 0, flagBound = 0
       let logScaleParam = document.getElementById('logScaleR0').checked
       if(logScaleParam) {
@@ -202,11 +184,11 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.R0Index, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      index = [0,1,0,1,0,1,1]
-      for ( let i = 1; i < generatedSet.length; i++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
-        resR0.push(ans)
-      }
+      // index = [0,1,0,1,0,1,1]
+      // In generatedSet the first row is the name,skip from it.
+      specialLog = document.querySelector('#special-log-R0');
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resR0, runButtonR0, specialLog)
+      
     }
   }
   // Amplitude
@@ -219,7 +201,7 @@ function start () {
         alert('Upload initial data!')
       }
     } else {
-      resAmplitude = []
+      resAmplitude = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
       logScale = 0, flagBound = 0
       logScaleParam = document.getElementById('logScaleAmplitude').checked
       if(logScaleParam) {
@@ -233,11 +215,10 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.AMPLITUDE, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      index = [1,0,0,1,0,1,1]
-      for ( let i = 1; i < generatedSet.length; i++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
-        resAmplitude.push(ans)
-      }
+      // index = [1,0,0,1,0,1,1]
+      // In generatedSet the first row is the name,skip from it.
+      let specialLog = document.querySelector('#special-log-Amplitude');
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resAmplitude, runButtonAmp, specialLog)
     }
   }
 
@@ -251,7 +232,7 @@ function start () {
         alert('Upload initial data!')
       }
     } else {
-      resMu = []
+      resMu = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
       logScale = 0, flagBound = 0
       let logScaleParam = document.getElementById('logScaleMu').checked
       if(logScaleParam) {
@@ -266,10 +247,8 @@ function start () {
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.MU, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
       // index = [1,1,0,0,0,1,1]
-      for ( let i = 1; i < generatedSet.length; i++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
-        resMu.push(ans)
-      }
+      let specialLog = document.querySelector('#special-log-Mu');
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resMu, runButtonMu, specialLog)
     }
   }
 
@@ -283,7 +262,7 @@ function start () {
         alert('Upload initial data!')
       }
     } else {
-      resRho = []
+      resRho = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
       logScale = 0, flagBound = 0
       let logScaleParam = document.getElementById('logScaleRho').checked
       if(logScaleParam) {
@@ -297,11 +276,9 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.RHO, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      index = [1,1,0,1,0,0,1]
-      for ( let i = 1; i < generatedSet.length; i++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
-        resRho.push(ans)
-      }
+      // index = [1,1,0,1,0,0,1]
+      let specialLog = document.querySelector('#special-log-Rho');
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resRho, runButtonRho, specialLog)
     }
   }
 
@@ -315,7 +292,7 @@ function start () {
         alert('Upload initial data!')
       }
     } else {
-      resPsi = []
+      resPsi = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
       logScale = 0, flagBound = 0
       let logScaleParam = document.getElementById('logScalePsi').checked
       if(logScaleParam) {
@@ -329,11 +306,9 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.PSI, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      index = [1,1,0,1,0,1,0]
-      for ( let i = 1; i < generatedSet.length; i++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
-        resPsi.push(ans)
-      }
+      // index = [1,1,0,1,0,1,0]
+      let specialLog = document.querySelector('#special-log-Psi');
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resPsi, runButtonPsi, specialLog)
     }
   }
 
@@ -419,13 +394,23 @@ function interpolator(points) {
   }
 }
 
-function specialLog() {
-  // log like normal first
-  console.log(...arguments)
-
-  // log to initial search display.
-  let specialLog = document.querySelector('#special-log');
+function specialLogFun(arg, specialLog) {
   for(let i=0;i<arguments.length;i++) {
-    specialLog.value += arguments[i].toString() + '\n';
+    specialLog.value += arg[i].toString() + '\n';
   }
 }
+
+function test(a, b, c, d, e, f, g, i, res, runButton, specialLog){
+  ans = traj_match(a, b, c, d[i], e, f, g)
+  res.push(ans)
+  if( i < d.length - 1){
+    specialLogFun(ans, specialLog)
+    runButton.onclick = function () {Csv(res)}
+    setTimeout(function () {test(a, b, c, d, e, f, g, i + 1, res, runButton, specialLog)},0)
+  } else {
+    specialLogFun(ans, specialLog)
+    runButton.innerText = 'Download'
+    runButton.onclick = function () {Csv(res)}
+  }
+}
+
