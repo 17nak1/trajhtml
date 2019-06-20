@@ -50,11 +50,11 @@
           infectious diseases. </p>
           <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
           <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
-          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and reports between  \((t_1, t_2)\) is normally distributed that is similar to the over    disposal binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + (  \rho\, C(t_1, t_2))^2 )$$</p>
+          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
           <div>
           <figure style="margin-left: 20%">
-            <img id="SEIR" src="./data/SEIR.png" width="70%" height="60%" >
-            <figcaption style="margin-left: 15%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
+            <img id="SEIR" src="./data/SEIR.png" width="60%" height="50%" >
+            <figcaption style="margin-left: 10%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
           </figure>
         </div>
         <h4>Tools for fitting the model</h4>
@@ -68,7 +68,7 @@
         <br>
         <p> Using process model, measurement model and initial point, trajectory matching can optimize the parameter of the model based on the maximum likihood  estimation and fit the model to the data. The result can be illustrated as an simulation.  </p>
       <figure style="text-align: center;">
-        <img id="data" src="./data/LondonData.png">
+        <img id="data" src="./data/LondonData.png" width="70%" height="40%" >
            <figcaption style="text-align:center">Figure 3: Data: A plot of reported measles cases, population sizes of London, the annual birth rates and vaccination rates from 1945 to   1990. Source of data: <a href=http://kingaa.github.io/pomp/vignettes/twentycities.rda>http://kingaa.github.io/pomp/vignettes/twentycities.rda</a> </figcaption>
       </figure>
       <br>
@@ -90,7 +90,7 @@
           </tr>
           <tr>
             <td class="variable" style="height:50px"> States names</td>
-            <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R , H' ></td>
+            <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R' ></td>
           </tr>
           <tr>
             <td class="variable" style="height:50px"> Zero name(s)</td>
@@ -255,12 +255,12 @@ return lik'
         <center>
           <div id="setup" style="width: 350px;">
             <tr>
-            <label id = "label-tab2file1" for="tab2file1-upload" class="custom-button">
-            Upload data covariate
+            <label id = "label-tab2file1" for="tab2file1-upload" class="custom-button" style="text-align: center">
+            Upload covariates
             </label>
             <input id="tab2file1-upload" type="file" style="display:none;">
             <label id = "label-tab2file2" for="tab2file2-upload" class="custom-button">
-            Upload data cases
+            Upload cases
             </label>
             <input id="tab2file2-upload" type="file" style="display:none;">
             </tr>
@@ -348,11 +348,9 @@ return lik'
           </td>
         </tr>
       </table>
-      <br>
       <div id="sobolButtonDiv" style="text-align: center;">
         <button class="custom-button-style-only" id="sobolButton">Generate & Run</button>
       </div>
-
       <div class="force-center">
         <textarea id="special-log"></textarea>
       </div>

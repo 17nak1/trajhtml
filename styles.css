@@ -48,6 +48,7 @@ table#table , table#th, table#td{
 div#table{
   margin: 4px 10% 4px 20%;
   padding: 4px 4px;
+  padding-bottom: 4px;
 }
 div#table table, div#table th, div#table td {
   border: 1px solid #a4b0be;
@@ -244,6 +245,7 @@ input::-webkit-inner-spin-button {
   margin-left: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  min-width: 100px;
 }
 h3#answer{
   text-align: center;

@@ -100,7 +100,9 @@ function start () {
    */
   let sobolButton = document.getElementById('sobolButton')
   sobolButton.onclick = function () {
-    let lowerBounds = [], upperBounds = [], resSobol = []
+    let lowerBounds = [],
+     upperBounds = [],
+     resSobol = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
     let sobolBoundTable = document.getElementById('sobolBound')
     let rows = sobolBoundTable.querySelectorAll('tr')
     for(i = 1; i < rows.length; i++){
@@ -118,11 +120,26 @@ function start () {
     } else {
       sobolButton.innerText = 'Running'
       times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 1][0])];
-      index = [1,1,0,1,1,1]
+      // index = [1,1,0,1,1,1]
       // TO DO: download be available during the run
-      for ( let j = 0; j < SobolNumberOfPoints; j++) {
-        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[j], times, index, modelTimestep)
+      // for ( let j = 0; j < SobolNumberOfPoints; j++) {
+      //   var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[j], times, index, modelTimestep)
+      //   resSobol.push(ans)
+      // }
+      
+      test(0)
+      function test(i){
+        var ans = traj_match(interpolPopulation, interpolBirth, dataCases, sobolSet[i], times, index, modelTimestep)
         resSobol.push(ans)
+        if( i < SobolNumberOfPoints - 1){
+        specialLog(ans)
+        sobolButton.onclick = function () {Csv(resSobol)}
+        setTimeout(function () {test(i+1)},0)
+        } else {
+          specialLog(ans)
+          sobolButton.innerText = 'Download'
+          sobolButton.onclick = function () {Csv(resSobol)}
+        }
       }
     }
   }
@@ -184,7 +201,7 @@ function start () {
       if(flag) {
         flagBound = 1
       }
-      generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.R0Index, logScale, [lowerLimit,upperLimit], flagBound, NoPoints);specialLog(generatedSet)
+      generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.R0Index, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
       index = [0,1,0,1,0,1,1]
       for ( let i = 1; i < generatedSet.length; i++) {
         var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
@@ -311,7 +328,7 @@ function start () {
       if(flag) {
         flagBound = 1
       }
-      generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.PSI, logScale, [lowerLimit,upperLimit], flagBound, NoPoints);specialLog(generatedSet)
+      generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.PSI, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
       index = [1,1,0,1,0,1,0]
       for ( let i = 1; i < generatedSet.length; i++) {
         var ans = traj_match(interpolPopulation, interpolBirth, dataCases, generatedSet[i], times, index, modelTimestep)
