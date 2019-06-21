@@ -359,4 +359,5 @@ input:checked + .slider:before {
 .force-center {
   margin-top: 20px;
   text-align: center;
+  padding-bottom: 8px;
 }

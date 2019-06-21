@@ -105,7 +105,7 @@ function start () {
      resSobol = [['R0', 'amplitude', 'gamma', 'mu', 'sigma', 'rho', 'psi', 'S_0', 'E_0', 'I_0', 'R_0', 'LogLik']]
     let sobolBoundTable = document.getElementById('sobolBound')
     let rows = sobolBoundTable.querySelectorAll('tr')
-    for(i = 1; i < rows.length; i++){
+    for(i = 1; i < rows.length - 1; i++){
       let row = rows[i]
       let cols = row.querySelectorAll('td')
       let lowerBound = cols[1].querySelector('input').value
@@ -115,6 +115,10 @@ function start () {
     }
     let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
     let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
+    for ( let i = 0; i < sobolSet.length; i++) {
+      len = sobolSet[i].length
+      sobolSet[i].push(1- (sobolSet[i][len - 1] + sobolSet[i][len - 2] + sobolSet[i][len - 3]))
+    }
     if(!dataCovar.length) {
       alert('Upload data in "Model and Data", then you can generate and run!')
     } else {

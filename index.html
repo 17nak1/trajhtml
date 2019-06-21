@@ -29,7 +29,7 @@
   <br>
 <div class="container" style="width: 80%">
   <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
-    <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The pomp software package (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
+    <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The <a href="https://kingaa.github.io/pomp/install.html">R package pomp </a> (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
 
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
@@ -40,24 +40,7 @@
   <div class="tab-content ">
     <!-- FIRST TAB -->
     <div id="home" class="tab-pane fade in active ">
-        <h3>What is trajectory matching?</h3>
-        <p> When dealing with large populations deterministic models are often used. In deterministic compartmental models, the transition rates from one compartment to another are mathematically expressed as derivatives. Hence the model is formulated using ordinary differential equations (ODE), Kermack WO [1927]. Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error. The R package <a href="https://kingaa.github.io/pomp/install.html">pomp </a> provides useful tools for trajectory matching. </p>
-        <h4>Model</h4>
-          <p>Infectious diseases of humans have been well-documented in literature and historical
-          records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
-          population (rural or urban, aging or young, easy or difficult access to health care),
-          and the history that the community has had with the specific disease. Mathematical and statistical tools have been used to describe the dynamics of
-          infectious diseases. </p>
-          <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
-          <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
-          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and  \( \psi \) is reporting overdispersion. Reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
-          <div>
-          <figure style="margin-left: 20%">
-            <img id="SEIR" src="./data/SEIR.png" width="60%" height="50%" >
-            <figcaption style="margin-left: 10%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
-          </figure>
-        </div>
-        <h4>Tools for fitting the model</h4>
+      <h3>POMP</h3>
         <p>Partially observed Markov process models consist of an unobserved Markov state process, connected to the data via a model of the observation (measurement) process. The process model is determined by the density \(P(x_n|x_{n−1})\) and the measurement process is determined by the density \(P(y_n|x_n)\).</p>
         <div>
           <figure style="margin-left: 20%">
@@ -65,7 +48,26 @@
             <figcaption style="margin-left: 28%">Figure 2: POMP model </figcaption>
           </figure>
         </div>
-        <br>
+
+        <h3>What is trajectory matching?</h3>
+        <p> When dealing with large populations deterministic models are often used. In deterministic compartmental models, the transition rates from one compartment to another are mathematically expressed as derivatives. Hence the model is formulated using ordinary differential equations (ODE), Kermack WO [1927]. Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error. </p>
+        <h4>Model</h4>
+          <p>Infectious diseases of humans have been well-documented in literature and historical
+          records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
+          population (rural or urban, aging or young, easy or difficult access to health care),
+          and the history that the community has had with the specific disease. Mathematical and statistical tools have been used to describe the dynamics of
+          infectious diseases. </p> 
+          <div>
+            <figure style="text-align: center;">
+              <img id="SEIR" src="./data/SEIR.png" width="40%" height="30%" >
+              <figcaption style="margin-left: 10%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
+            </figure>
+          </div>
+          <br>
+          <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
+          <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
+          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and  \( \psi \) is reporting overdispersion. Reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
+        
         <p> Using process model, measurement model and initial point, trajectory matching can optimize the parameter of the model based on the maximum likihood  estimation and fit the model to the data. The result can be illustrated as an simulation.  </p>
       <figure style="text-align: center;">
         <img id="data" src="./data/LondonData.png" width="70%" height="40%" >
@@ -101,7 +103,7 @@
             <td ><input id= modelt0 style="width:100%;border: 0" type="number" value="1940" ></td>
           </tr>
           <tr>
-            <td class="variable" style="height:50px"> Maximum time step</td>
+            <td title="biweekly" class="variable" style="height:50px"> Maximum time step</td>
             <td ><input id= modelTimestep style="width:100%;border: 0" type="number" value="0.03832991102"></td>
           </tr>
         </table>
@@ -319,7 +321,7 @@ return lik'
             <tr>
               <td title="Initial fraction of susceptibles"> S_0 </td>
               <td> <input type="number" value="0"></td>
-              <td> <input type="number" value="0.1"></td>
+              <td> <input type="number" value="0.2"></td>
             </tr>
             <tr>
               <td title="Initial fraction of exposed">E_0</td>
@@ -415,9 +417,9 @@ return lik'
               <button id="buttonRunR0" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
-          <div class="force-center">
-            <textarea  class = "special-log"  id="special-log-R0"></textarea>
-          </div>
+        </div>
+        <div class="force-center">
+          <textarea  class = "special-log"  id="special-log-R0"></textarea>
         </div>
       </div>
       <button style="background-color:#b1cbbb;width: 100%" class="accordion">Amplitude</button>
@@ -470,9 +472,9 @@ return lik'
               <button id="buttonRunAmplitude" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
-          <div class="force-center">
-            <textarea  class = "special-log"  id="special-log-Amplitude"></textarea>
-          </div>
+        </div>
+        <div class="force-center">
+          <textarea  class = "special-log"  id="special-log-Amplitude"></textarea>
         </div>
       </div>
       <button style="background-color:#eea29a  ;width: 100%" class="accordion">Mu</button>
@@ -525,9 +527,9 @@ return lik'
               <button id="buttonRunMu" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
-          <div class="force-center">
-            <textarea  class = "special-log"  id="special-log-Mu"></textarea>
-          </div>
+        </div>
+        <div class="force-center">
+          <textarea  class = "special-log"  id="special-log-Mu"></textarea>
         </div>
       </div>
       <button style="background-color:#F2D7D5;width: 100%" class="accordion">Rho</button>
@@ -580,9 +582,9 @@ return lik'
               <button id = "buttonRunRho"  class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
-          <div class="force-center">
-            <textarea  class = "special-log"  id="special-log-Rho"></textarea>
-          </div>
+        </div>
+        <div class="force-center">
+          <textarea  class = "special-log"  id="special-log-Rho"></textarea>
         </div>
       </div>
       <button style="background-color:#BCE6BF;width: 100%" class="accordion">Psi</button>
@@ -635,9 +637,9 @@ return lik'
               <button id="buttonRunPsi" class="custom-button-style-only">Generate & Run</button>
             </center>
           </div>
-          <div class="force-center">
-            <textarea  class = "special-log"  id="special-log-Psi"></textarea>
-          </div>
+        </div>
+        <div class="force-center">
+          <textarea  class = "special-log"  id="special-log-Psi"></textarea>
         </div>
       </div>
     <button id="combineButton" class="custom-button">Combine</button>
