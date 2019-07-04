@@ -9,7 +9,7 @@ let combinedTables = require('traj_match').combinedTables
 
 /**
   * paramObject : Array of indices for 6 parameters.
-  * index is an array of 6 parameters in paramObject. 0 means keep it fixed and 1 means estimate it during computation.
+  * index is an array of 7 parameters in paramObject. 0 means keep it fixed and 1 means estimate it during computation.
   */
 var inputArr = [], init = [], res = [], index = Array(6).fill(0)
 let dataCovar = [], dataCases = []
@@ -116,15 +116,16 @@ function start () {
     let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
     let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
     for ( let i = 0; i < sobolSet.length; i++) {
-      len = sobolSet[i].length
-      sobolSet[i].push(1- (sobolSet[i][len - 1] + sobolSet[i][len - 2] + sobolSet[i][len - 3]))
+       len = sobolSet[i].length
+       sobolSet[i].push(1- (sobolSet[i][len - 1] +sobolSet[i][len - 2] +sobolSet[i][len - 3]))// TODO
     }
     if(!dataCovar.length) {
       alert('Upload data in "Model and Data", then you can generate and run!')
     } else {
       sobolButton.innerText = 'Running'
       times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 1][0])];
-      index = [1,1,0,1,0,1,1]
+
+      // index = [1,1,0,1,0,1,1]
       specialLog = document.querySelector('#special-log-sobol');
       test(interpolPopulation, interpolBirth, dataCases, sobolSet, times, index, modelTimestep, 0, resSobol, sobolButton, specialLog)
     }
@@ -404,10 +405,13 @@ function interpolator(points) {
 }
 
 function specialLogFun(arg, specialLog) {
-  for(let i = 0;i < arg.length;i++) {
+  for(let i = 0; i < arg.length;i++) {
     specialLog.value += arg[i].toString() + '\n';
+    specialLog.scrollTop = specialLog.scrollHeight;
   }
 }
+
+
 
 function test(a, b, c, d, e, f, g, i, res, runButton, specialLog){
   ans = traj_match(a, b, c, d[i], e, f, g)

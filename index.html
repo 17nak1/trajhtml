@@ -29,7 +29,7 @@
   <br>
 <div class="container" style="width: 80%">
   <p>Data analysis typically involves identifying regions of parameter space within which a postulated model is statistically consistent with the data. Additionally, one frequently desires to assess the relative merits of alternative models as explanations of the data. </p>
-    <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The <a href="https://kingaa.github.io/pomp/install.html">R package pomp </a> (King et al. 2016) provides us with a wide range of functions to represent POMP models.</p>
+    <p>A partially observed Markov process (POMP) model consists of incomplete and noisy measurements of a latent, unobserved Markov process. It has been a challenge to provide a software environment that can effectively handle broad classes of POMP models and take advantage of the wide range of statistical methodologies that have been proposed for such models. The <a href="https://kingaa.github.io/pomp/install.html">R package pomp </a> (King et al. 2016) provides us with a wide range of tools to represent POMP models.</p>
 
   <ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
@@ -41,7 +41,7 @@
     <!-- FIRST TAB -->
     <div id="home" class="tab-pane fade in active ">
       <h3>POMP</h3>
-        <p>Partially observed Markov process models consist of an unobserved Markov state process, connected to the data via a model of the observation (measurement) process. The process model is determined by the density \(P(x_n|x_{n−1})\) and the measurement process is determined by the density \(P(y_n|x_n)\).</p>
+        <p>Partially observed Markov process models consist of hiden Markov states, connected to the data via a model of the observation (measurement) process. The process model is determined by the density \(P(x_n|x_{n−1})\) and the measurement process is determined by the density \(P(y_n|x_n)\).</p>
         <div>
           <figure style="margin-left: 20%">
             <img id="pomp" src="./data/pomp.png" width="70%" height="40%" >
@@ -50,7 +50,8 @@
         </div>
 
         <h3>What is trajectory matching?</h3>
-        <p> When dealing with large populations deterministic models are often used. In deterministic compartmental models, the transition rates from one compartment to another are mathematically expressed as derivatives. Hence the model is formulated using ordinary differential equations (ODE), Kermack WO [1927]. Trajectory matching attempts to match trajectories of a deterministic model to data. In fact,  the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error. </p>
+        <p> </p>
+        <p>Deterministic compartmental models are important in dealing with large populations. They are formulated based on ordinary differential equations (ODE), since the transition rates from one compartment to another are mathematically expressed as derivatives (Kermack and McKendrick [1927]). Trajectory matching attempts to match trajectories of a deterministic model to data. In fact, the function estimates the parameter of the model by fitting the trajectory to data. It maximize the likelihood of the data assuming there is no process noise and all stochasticity is measurement error. </p>
         <h4>Model</h4>
           <p>Infectious diseases of humans have been well-documented in literature and historical
           records due to their sometimes calamitous effects on civilizations. The effect of a disease on a population varies, depending on the structure of the
@@ -60,13 +61,13 @@
           <div>
             <figure style="text-align: center;">
               <img id="SEIR" src="./data/SEIR.png" width="40%" height="30%" >
-              <figcaption style="margin-left: 10%" >Figure 2: SEIR Model include hidden cases and the report. </figcaption>
+              <figcaption style="margin-left: 10%" >Figure 2: SEIR Model include true cases and the report. </figcaption>
             </figure>
           </div>
           <br>
           <p>The SEIR model is an extension of the model first studied by Kermack and McKendrick [1932, 1933]. This is a standard compartmental model framework used in epidemiology in which the hosts have the following compartments available: susceptible, exposed, infected, recovered. Considering N(t) the population at time t,  $$S(t) + E(t) + I(t) + R(t) = N(t)$$</p>
           <p>Here the number of new infected cases is defined by $$\text{cases}: C(t_1,t_2) = \int_{t_1}^{t_2} B(t) \, \frac{S(t) I(t)}{N(t)}\, dt$$ where \( B(t)\) is the forcing function
-          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and  \( \psi \) is reporting overdispersion. Reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
+          that reflects the actual seasonally changing circumstances. \(\rho\) is the probability of reporting and  \( \psi \) is overdispersion parameter. Reports between  \((t_1, t_2)\) is normally distributed that is similar to the overdispersed binomial. $$\text{reports} \sim  \text{Normal}(\rho \, C(t_1, t_2), \rho \, (1- \rho)C(t_1, t_2) + ( \psi \rho\, C(t_1, t_2))^2 )$$</p>
         
         <p> Using process model, measurement model and initial point, trajectory matching can optimize the parameter of the model based on the maximum likihood  estimation and fit the model to the data. The result can be illustrated as an simulation.  </p>
       <figure style="text-align: center;">
@@ -95,7 +96,7 @@
             <td ><input id=modelStates style="width:100%;border: 0" type="text" value=' S, E, I, R' ></td>
           </tr>
           <tr>
-            <td class="variable" style="height:50px"> Zero name(s)</td>
+            <td title=" number of true cases" class="variable" style="height:50px"> Zero name(s)</td>
             <td ><input id= zeroName style="width:100%;border: 0" type="text" value='H' ></td>
           </tr>
           <tr>
@@ -262,7 +263,7 @@ return lik'
             </label>
             <input id="tab2file1-upload" type="file" style="display:none;">
             <label id = "label-tab2file2" for="tab2file2-upload" class="custom-button">
-            Upload cases
+            Upload reports
             </label>
             <input id="tab2file2-upload" type="file" style="display:none;">
             </tr>

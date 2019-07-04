@@ -353,7 +353,9 @@ input:checked + .slider:before {
 
 .special-log {
   min-width: 600px;
-  height: 280px;
+  min-height: 180px;
+  border: 1px solid #0004;
+  border-radius: 3px;
 }
 
 .force-center {
