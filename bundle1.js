@@ -16,6 +16,11 @@ combineTables.combine = function (runArray) {
   for ( run = 0; run < runArray.length; run++){
     var table = [], dataset = []
     var table = runArray[run]
+    if ( table.length) {
+      if (isNaN(Number(table[0][0]))) {
+        table.shift()
+      }
+    }
     table.sort(sortFunction)
 
     newSet = {}
@@ -29,9 +34,19 @@ combineTables.combine = function (runArray) {
   }
 
   allSets.sort(sortFunction)
-  return allSets
+  let finalSet = [allSets[0]]
+  let size = allSets[0].length - 1
+  for (let i = 1; i < allSets.length; i++) {
+    if(allSets[i - 1][0] !== allSets[i][0]) {
+      finalSet.push(allSets[i])
+    } else {
+      if(allSets[i - 1][size] !== allSets[i][size]) {
+        finalSet.push(allSets[i])
+      }
+    } 
+  }
+  return finalSet
 }
-
 // Helper function
 function sortFunction(a, b) {
   if (Number(a[a.length - 1]) === Number(b[a.length - 1])) {
@@ -3758,7 +3773,7 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     ;console.log(params, loglik)
     return [-(loglik).toFixed(6)]
   }
-  return[params, -solution.fx]
+  return[...params, -solution.fx]
 }
 
 //* ODE solver

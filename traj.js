@@ -119,7 +119,7 @@ function traj_match (interpolPopulation, interpolBirth, dataCases, params, times
     ;console.log(params, loglik)
     return [-(loglik).toFixed(6)]
   }
-  return[params, -solution.fx]
+  return[...params, -solution.fx]
 }
 
 //* ODE solver

@@ -124,10 +124,11 @@ function start () {
     } else {
       sobolButton.innerText = 'Running'
       times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 1][0])];
-      // index = [1,1,0,1,1,1]
+      index = [1,1,0,1,0,1,1]
       specialLog = document.querySelector('#special-log-sobol');
       test(interpolPopulation, interpolBirth, dataCases, sobolSet, times, index, modelTimestep, 0, resSobol, sobolButton, specialLog)
     }
+    index = [0,0,0,0,0,0,0]
   }
 
   // Tab "Refinments"
@@ -191,9 +192,9 @@ function start () {
       // index = [0,1,0,1,0,1,1]
       // In generatedSet the first row is the name,skip from it.
       specialLog = document.querySelector('#special-log-R0');
-      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resR0, runButtonR0, specialLog)
-      
+      test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resR0, runButtonR0, specialLog) 
     }
+    index = [0,0,0,0,0,0,0]
   }
   // Amplitude
   let runButtonAmp = document.getElementById('buttonRunAmplitude')
@@ -224,6 +225,7 @@ function start () {
       let specialLog = document.querySelector('#special-log-Amplitude');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resAmplitude, runButtonAmp, specialLog)
     }
+    index = [0,0,0,0,0,0,0]
   }
 
   // Mu
@@ -250,10 +252,11 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.MU, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      // index = [1,1,0,0,0,1,1]
+      index = [1,1,0,0,0,1,1]
       let specialLog = document.querySelector('#special-log-Mu');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resMu, runButtonMu, specialLog)
     }
+    index = [0,0,0,0,0,0,0]
   }
 
     // Rho
@@ -284,6 +287,7 @@ function start () {
       let specialLog = document.querySelector('#special-log-Rho');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resRho, runButtonRho, specialLog)
     }
+    index = [0,0,0,0,0,0,0]
   }
 
   // Psi
@@ -314,6 +318,7 @@ function start () {
       let specialLog = document.querySelector('#special-log-Psi');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resPsi, runButtonPsi, specialLog)
     }
+    index = [0,0,0,0,0,0,0]
   }
 
   let combineButton = document.getElementById('combineButton')
@@ -399,7 +404,7 @@ function interpolator(points) {
 }
 
 function specialLogFun(arg, specialLog) {
-  for(let i=0;i<arguments.length;i++) {
+  for(let i = 0;i < arg.length;i++) {
     specialLog.value += arg[i].toString() + '\n';
   }
 }
@@ -408,11 +413,11 @@ function test(a, b, c, d, e, f, g, i, res, runButton, specialLog){
   ans = traj_match(a, b, c, d[i], e, f, g)
   res.push(ans)
   if( i < d.length - 1){
-    specialLogFun(ans, specialLog)
+    specialLogFun([ans], specialLog)
     runButton.onclick = function () {Csv(res)}
     setTimeout(function () {test(a, b, c, d, e, f, g, i + 1, res, runButton, specialLog)},0)
   } else {
-    specialLogFun(ans, specialLog)
+    specialLogFun([ans], specialLog)
     runButton.innerText = 'Download'
     runButton.onclick = function () {Csv(res)}
   }
