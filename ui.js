@@ -6,10 +6,38 @@ let traj_match = require('traj_match').traj_match
 let generateSets = require('traj_match').generateSets
 let combinedTables = require('traj_match').combinedTables
 
-
+function getIndicies(type) {
+  if(quickRun) {
+    return [0,0,0,0,0,0,0];
+  } else {
+    switch (type) {
+      case 'SOBOL':
+        return [1,1,0,1,0,1,1];
+        break;
+      case 'R0':
+        return [0,1,0,1,0,1,1];
+        break;
+      case 'AMP':
+        return [1,0,0,1,0,1,1];
+        break;
+      case 'MU':
+        return [1,1,0,0,0,1,1];
+        break;
+      case 'Rho':
+        return [1,1,0,1,0,0,1];
+        break;
+      case 'PSI':
+        return [1,1,0,1,0,1,0];
+        break;
+      default:
+        return [0,0,0,0,0,0,0];
+    }
+  }
+}
+let quickRun = false
 /**
   * paramObject : Array of indices for 6 parameters.
-  * index is an array of 7 parameters in paramObject. 0 means keep it fixed and 1 means estimate it during computation.
+  * index is an array of 6 parameters in paramObject. 0 means keep it fixed and 1 means estimate it during computation.
   */
 var inputArr = [], init = [], res = [], index = Array(6).fill(0)
 let dataCovar = [], dataCases = []
@@ -116,20 +144,18 @@ function start () {
     let SobolNumberOfPoints = Number(document.getElementById('sobolPoint').value)
     let sobolSet = sobolSeq.sobolDesign( lowerBounds,  upperBounds, SobolNumberOfPoints)
     for ( let i = 0; i < sobolSet.length; i++) {
-       len = sobolSet[i].length
-       sobolSet[i].push(1- (sobolSet[i][len - 1] +sobolSet[i][len - 2] +sobolSet[i][len - 3]))// TODO
+      len = sobolSet[i].length
+      sobolSet[i].push(1- (sobolSet[i][len - 1] + sobolSet[i][len - 2] + sobolSet[i][len - 3]))
     }
     if(!dataCovar.length) {
       alert('Upload data in "Model and Data", then you can generate and run!')
     } else {
       sobolButton.innerText = 'Running'
       times = [modelt0, Number(dataCases[0][0]), Number(dataCases[dataCases.length - 1][0])];
-
-      // index = [1,1,0,1,0,1,1]
+      index = getIndicies("SOBOL")
       specialLog = document.querySelector('#special-log-sobol');
       test(interpolPopulation, interpolBirth, dataCases, sobolSet, times, index, modelTimestep, 0, resSobol, sobolButton, specialLog)
     }
-    index = [0,0,0,0,0,0,0]
   }
 
   // Tab "Refinments"
@@ -190,12 +216,11 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.R0Index, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      // index = [0,1,0,1,0,1,1]
+      index = getIndicies('R0')
       // In generatedSet the first row is the name,skip from it.
       specialLog = document.querySelector('#special-log-R0');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resR0, runButtonR0, specialLog) 
     }
-    index = [0,0,0,0,0,0,0]
   }
   // Amplitude
   let runButtonAmp = document.getElementById('buttonRunAmplitude')
@@ -221,12 +246,11 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.AMPLITUDE, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      // index = [1,0,0,1,0,1,1]
+      index = getIndicies('AMP')
       // In generatedSet the first row is the name,skip from it.
       let specialLog = document.querySelector('#special-log-Amplitude');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resAmplitude, runButtonAmp, specialLog)
-    }
-    index = [0,0,0,0,0,0,0]
+    }  
   }
 
   // Mu
@@ -253,11 +277,10 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.MU, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      index = [1,1,0,0,0,1,1]
+      index = getIndicies('MU')
       let specialLog = document.querySelector('#special-log-Mu');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resMu, runButtonMu, specialLog)
-    }
-    index = [0,0,0,0,0,0,0]
+    } 
   }
 
     // Rho
@@ -284,11 +307,10 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.RHO, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      // index = [1,1,0,1,0,0,1]
+      index = getIndicies('RHO')
       let specialLog = document.querySelector('#special-log-Rho');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resRho, runButtonRho, specialLog)
-    }
-    index = [0,0,0,0,0,0,0]
+    } 
   }
 
   // Psi
@@ -315,11 +337,10 @@ function start () {
         flagBound = 1
       }
       generatedSet = generateSets.generateSet(initalRefinPoints, paramObject.PSI, logScale, [lowerLimit,upperLimit], flagBound, NoPoints)
-      // index = [1,1,0,1,0,1,0]
+      index = getIndicies('PSI')
       let specialLog = document.querySelector('#special-log-Psi');
       test(interpolPopulation, interpolBirth, dataCases, generatedSet, times, index, modelTimestep, 1, resPsi, runButtonPsi, specialLog)
-    }
-    index = [0,0,0,0,0,0,0]
+    }  
   }
 
   let combineButton = document.getElementById('combineButton')
@@ -405,13 +426,10 @@ function interpolator(points) {
 }
 
 function specialLogFun(arg, specialLog) {
-  for(let i = 0; i < arg.length;i++) {
+  for(let i = 0;i < arg.length;i++) {
     specialLog.value += arg[i].toString() + '\n';
-    specialLog.scrollTop = specialLog.scrollHeight;
   }
 }
-
-
 
 function test(a, b, c, d, e, f, g, i, res, runButton, specialLog){
   ans = traj_match(a, b, c, d[i], e, f, g)

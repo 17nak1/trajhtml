@@ -47,6 +47,7 @@ combineTables.combine = function (runArray) {
   }
   return finalSet
 }
+
 // Helper function
 function sortFunction(a, b) {
   if (Number(a[a.length - 1]) === Number(b[a.length - 1])) {
@@ -2240,82 +2241,82 @@ var EFX = 1.28379167095512586316e-1;  // 0x3FC06EBA, 0x8214DB69
 var EFX8 = 1.02703333676410069053;    // 0x3FF06EBA, 0x8214DB69
 var PPC = 1.28379167095512558561e-1;  // 0x3FC06EBA, 0x8214DB68
 var PP = [
-	-3.25042107247001499370e-1, // 0xBFD4CD7D, 0x691CB913
-	-2.84817495755985104766e-2, // 0xBF9D2A51, 0xDBD7194F
-	-5.77027029648944159157e-3, // 0xBF77A291, 0x236668E4
-	-2.37630166566501626084e-5  // 0xBEF8EAD6, 0x120016AC
+  -3.25042107247001499370e-1, // 0xBFD4CD7D, 0x691CB913
+  -2.84817495755985104766e-2, // 0xBF9D2A51, 0xDBD7194F
+  -5.77027029648944159157e-3, // 0xBF77A291, 0x236668E4
+  -2.37630166566501626084e-5  // 0xBEF8EAD6, 0x120016AC
 ];
 var QQC = 1.0;
 var QQ = [
-	3.97917223959155352819e-1, // 0x3FD97779, 0xCDDADC09
-	6.50222499887672944485e-2, // 0x3FB0A54C, 0x5536CEBA
-	5.08130628187576562776e-3, // 0x3F74D022, 0xC4D36B0F
-	1.32494738004321644526e-4, // 0x3F215DC9, 0x221C1A10
-	-3.96022827877536812320e-6 // 0xBED09C43, 0x42A26120
+  3.97917223959155352819e-1, // 0x3FD97779, 0xCDDADC09
+  6.50222499887672944485e-2, // 0x3FB0A54C, 0x5536CEBA
+  5.08130628187576562776e-3, // 0x3F74D022, 0xC4D36B0F
+  1.32494738004321644526e-4, // 0x3F215DC9, 0x221C1A10
+  -3.96022827877536812320e-6 // 0xBED09C43, 0x42A26120
 ];
 
 // Coefficients for approximation to erf on [0.84375, 1.25)
 var PAC = -2.36211856075265944077e-3; // 0xBF6359B8, 0xBEF77538
 var PA = [
-	4.14856118683748331666e-1,  // 0x3FDA8D00, 0xAD92B34D
-	-3.72207876035701323847e-1, // 0xBFD7D240, 0xFBB8C3F1
-	3.18346619901161753674e-1,  // 0x3FD45FCA, 0x805120E4
-	-1.10894694282396677476e-1, // 0xBFBC6398, 0x3D3E28EC
-	3.54783043256182359371e-2,  // 0x3FA22A36, 0x599795EB
-	-2.16637559486879084300e-3  // 0xBF61BF38, 0x0A96073F
+  4.14856118683748331666e-1,  // 0x3FDA8D00, 0xAD92B34D
+  -3.72207876035701323847e-1, // 0xBFD7D240, 0xFBB8C3F1
+  3.18346619901161753674e-1,  // 0x3FD45FCA, 0x805120E4
+  -1.10894694282396677476e-1, // 0xBFBC6398, 0x3D3E28EC
+  3.54783043256182359371e-2,  // 0x3FA22A36, 0x599795EB
+  -2.16637559486879084300e-3  // 0xBF61BF38, 0x0A96073F
 ];
 var QAC = 1.0;
 var QA = [
-	1.06420880400844228286e-1, // 0x3FBB3E66, 0x18EEE323
-	5.40397917702171048937e-1, // 0x3FE14AF0, 0x92EB6F33
-	7.18286544141962662868e-2, // 0x3FB2635C, 0xD99FE9A7
-	1.26171219808761642112e-1, // 0x3FC02660, 0xE763351F
-	1.36370839120290507362e-2, // 0x3F8BEDC2, 0x6B51DD1C
-	1.19844998467991074170e-2  // 0x3F888B54, 0x5735151D
+  1.06420880400844228286e-1, // 0x3FBB3E66, 0x18EEE323
+  5.40397917702171048937e-1, // 0x3FE14AF0, 0x92EB6F33
+  7.18286544141962662868e-2, // 0x3FB2635C, 0xD99FE9A7
+  1.26171219808761642112e-1, // 0x3FC02660, 0xE763351F
+  1.36370839120290507362e-2, // 0x3F8BEDC2, 0x6B51DD1C
+  1.19844998467991074170e-2  // 0x3F888B54, 0x5735151D
 ];
 
 // Coefficients for approximation to erfc on [1.25, 1/0.35)
 var RAC = -9.86494403484714822705e-3; // 0xBF843412, 0x600D6435
 var RA = [
-	-6.93858572707181764372e-1, // 0xBFE63416, 0xE4BA7360
-	-1.05586262253232909814e1,  // 0xC0251E04, 0x41B0E726 
-	-6.23753324503260060396e1,  // 0xC04F300A, 0xE4CBA38D
-	-1.62396669462573470355e2,  // 0xC0644CB1, 0x84282266
-	-1.84605092906711035994e2,  // 0xC067135C, 0xEBCCABB2
-	-8.12874355063065934246e1,  // 0xC0545265, 0x57E4D2F2
-	-9.81432934416914548592     // 0xC023A0EF, 0xC69AC25C
+  -6.93858572707181764372e-1, // 0xBFE63416, 0xE4BA7360
+  -1.05586262253232909814e1,  // 0xC0251E04, 0x41B0E726 
+  -6.23753324503260060396e1,  // 0xC04F300A, 0xE4CBA38D
+  -1.62396669462573470355e2,  // 0xC0644CB1, 0x84282266
+  -1.84605092906711035994e2,  // 0xC067135C, 0xEBCCABB2
+  -8.12874355063065934246e1,  // 0xC0545265, 0x57E4D2F2
+  -9.81432934416914548592     // 0xC023A0EF, 0xC69AC25C
 ];
 var SAC = 1.0;
 var SA = [
-	1.96512716674392571292e1,  // 0x4033A6B9, 0xBD707687
-	1.37657754143519042600e2,  // 0x4061350C, 0x526AE721
-	4.34565877475229228821e2,  // 0x407B290D, 0xD58A1A71
-	6.45387271733267880336e2,  // 0x40842B19, 0x21EC2868
-	4.29008140027567833386e2,  // 0x407AD021, 0x57700314
-	1.08635005541779435134e2,  // 0x405B28A3, 0xEE48AE2C
-	6.57024977031928170135,    // 0x401A47EF, 0x8E484A93
-	-6.04244152148580987438e-2 // 0xBFAEEFF2, 0xEE749A62
+  1.96512716674392571292e1,  // 0x4033A6B9, 0xBD707687
+  1.37657754143519042600e2,  // 0x4061350C, 0x526AE721
+  4.34565877475229228821e2,  // 0x407B290D, 0xD58A1A71
+  6.45387271733267880336e2,  // 0x40842B19, 0x21EC2868
+  4.29008140027567833386e2,  // 0x407AD021, 0x57700314
+  1.08635005541779435134e2,  // 0x405B28A3, 0xEE48AE2C
+  6.57024977031928170135,    // 0x401A47EF, 0x8E484A93
+  -6.04244152148580987438e-2 // 0xBFAEEFF2, 0xEE749A62
 ];
 
 // Coefficients for approximation to erfc on [1/0.35, 28]
 var RBC = -9.86494292470009928597e-3; // 0xBF843412, 0x39E86F4A
 var RB = [
-	-7.99283237680523006574e-1, // 0xBFE993BA, 0x70C285DE
-	-1.77579549177547519889e1,  // 0xC031C209, 0x555F995A
-	-1.60636384855821916062e2,  // 0xC064145D, 0x43C5ED98
-	-6.37566443368389627722e2,  // 0xC083EC88, 0x1375F228
-	-1.02509513161107724954e3,  // 0xC0900461, 0x6A2E5992
-	-4.83519191608651397019e2,  // 0xC07E384E, 0x9BDC383F
+  -7.99283237680523006574e-1, // 0xBFE993BA, 0x70C285DE
+  -1.77579549177547519889e1,  // 0xC031C209, 0x555F995A
+  -1.60636384855821916062e2,  // 0xC064145D, 0x43C5ED98
+  -6.37566443368389627722e2,  // 0xC083EC88, 0x1375F228
+  -1.02509513161107724954e3,  // 0xC0900461, 0x6A2E5992
+  -4.83519191608651397019e2,  // 0xC07E384E, 0x9BDC383F
 ];
 var SBC = 1.0;
 var SB = [
-	3.03380607434824582924e1, // 0x403E568B, 0x261D5190
-	3.25792512996573918826e2, // 0x40745CAE, 0x221B9F0A
-	1.53672958608443695994e3, // 0x409802EB, 0x189D5118
-	3.19985821950859553908e3, // 0x40A8FFB7, 0x688C246A
-	2.55305040643316442583e3, // 0x40A3F219, 0xCEDF3BE6
-	4.74528541206955367215e2, // 0x407DA874, 0xE79FE763
-	-2.24409524465858183362e1 // 0xC03670E2, 0x42712D62
+  3.03380607434824582924e1, // 0x403E568B, 0x261D5190
+  3.25792512996573918826e2, // 0x40745CAE, 0x221B9F0A
+  1.53672958608443695994e3, // 0x409802EB, 0x189D5118
+  3.19985821950859553908e3, // 0x40A8FFB7, 0x688C246A
+  2.55305040643316442583e3, // 0x40A3F219, 0xCEDF3BE6
+  4.74528541206955367215e2, // 0x407DA874, 0xE79FE763
+  -2.24409524465858183362e1 // 0xC03670E2, 0x42712D62
 ];
 
 
@@ -2336,94 +2337,94 @@ var polyvalSB = evalpoly( SB );
 
 /**
 * FUNCTION: erf( x )
-*	Evaluates the error function.
+* Evaluates the error function.
 *
 * @param {Number} x - input value
 * @returns {Number} evaluated error function
 */
 function erf( x ) {
-	var sign;
-	var ax;
-	var z;
-	var r;
-	var s;
-	var y;
-	var p;
-	var q;
+  var sign;
+  var ax;
+  var z;
+  var r;
+  var s;
+  var y;
+  var p;
+  var q;
 
-	// Special case: NaN
-	if ( x !== x ) {
-		return NaN;
-	}
-	// Special case: +infinity
-	if ( x === PINF ) {
-		return 1;
-	}
-	// Special case: -infinity
-	if ( x === NINF ) {
-		return -1;
-	}
-	// Special case: +-0
-	if ( x === 0 ) {
-		return x;
-	}
-	if ( x < 0 ) {
-		sign = true;
-		ax = -x;
-	} else {
-		sign = false;
-		ax = x;
-	}
-	// |x| < 0.84375
-	if ( ax < 0.84375 ) {
-		if ( ax < SMALL ) {
-			if ( ax < VERY_TINY ) {
-				// Avoid underflow:
-				return 0.125 * (8.0*x + EFX8*x);
-			}
-			return x + EFX*x;
-		}
-		z = x * x;
-		r = PPC + z*polyvalPP( z );
-		s = QQC + z*polyvalQQ( z );
-		y = r / s;
-		return x + x*y;
-	}
-	// 0.84375 <= |x| < 1.25
-	if ( ax < 1.25 ) {
-		s = ax - 1;
-		p = PAC + s*polyvalPA( s );
-		q = QAC + s*polyvalQA( s );
-		if ( sign ) {
-			return -ERX - p/q;
-		}
-		return ERX + p/q;
-	}
-	// +inf > |x| >= 6
-	if ( ax >= 6 ) {
-		if ( sign ) {
-			return TINY - 1.0; // raise inexact
-		}
-		return 1.0 - TINY; // raise inexact
-	}
-	s = 1.0 / (ax*ax);
+  // Special case: NaN
+  if ( x !== x ) {
+    return NaN;
+  }
+  // Special case: +infinity
+  if ( x === PINF ) {
+    return 1;
+  }
+  // Special case: -infinity
+  if ( x === NINF ) {
+    return -1;
+  }
+  // Special case: +-0
+  if ( x === 0 ) {
+    return x;
+  }
+  if ( x < 0 ) {
+    sign = true;
+    ax = -x;
+  } else {
+    sign = false;
+    ax = x;
+  }
+  // |x| < 0.84375
+  if ( ax < 0.84375 ) {
+    if ( ax < SMALL ) {
+      if ( ax < VERY_TINY ) {
+        // Avoid underflow:
+        return 0.125 * (8.0*x + EFX8*x);
+      }
+      return x + EFX*x;
+    }
+    z = x * x;
+    r = PPC + z*polyvalPP( z );
+    s = QQC + z*polyvalQQ( z );
+    y = r / s;
+    return x + x*y;
+  }
+  // 0.84375 <= |x| < 1.25
+  if ( ax < 1.25 ) {
+    s = ax - 1;
+    p = PAC + s*polyvalPA( s );
+    q = QAC + s*polyvalQA( s );
+    if ( sign ) {
+      return -ERX - p/q;
+    }
+    return ERX + p/q;
+  }
+  // +inf > |x| >= 6
+  if ( ax >= 6 ) {
+    if ( sign ) {
+      return TINY - 1.0; // raise inexact
+    }
+    return 1.0 - TINY; // raise inexact
+  }
+  s = 1.0 / (ax*ax);
 
-	// |x| < 1/0.35 ~ 2.857143
-	if ( ax < 2.857142857142857 ) {
-		r = RAC + s*polyvalRA( s );
-		s = SAC + s*polyvalSA( s );
-	}
-	// |x| >= 1/0.35 ~ 2.857143
-	else {
-		r = RBC + s*polyvalRB( s );
-		s = SBC + s*polyvalSB( s );
-	}
-	z = setLowWord( ax, 0 ); // pseudo-single (20-bit) precision x
-	r = exp( -z*z - 0.5625 ) * exp( (z-ax)*(z+ax) + r/s );
-	if ( sign ) {
-		return r/ax - 1;
-	}
-	return 1 - r/ax;
+  // |x| < 1/0.35 ~ 2.857143
+  if ( ax < 2.857142857142857 ) {
+    r = RAC + s*polyvalRA( s );
+    s = SAC + s*polyvalSA( s );
+  }
+  // |x| >= 1/0.35 ~ 2.857143
+  else {
+    r = RBC + s*polyvalRB( s );
+    s = SBC + s*polyvalSB( s );
+  }
+  z = setLowWord( ax, 0 ); // pseudo-single (20-bit) precision x
+  r = exp( -z*z - 0.5625 ) * exp( (z-ax)*(z+ax) + r/s );
+  if ( sign ) {
+    return r/ax - 1;
+  }
+  return 1 - r/ax;
 } // end FUNCTION erf()
 
 
@@ -2437,33 +2438,33 @@ module.exports = erf;
 
 /**
 * FUNCTION: evalpoly( c, x )
-*	Evaluates a polynomial.
+* Evaluates a polynomial.
 *
 * @param {Number[]|Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} c - polynomial coefficients sorted in ascending degree
 * @param {Number} x - value at which to evaluate the polynomial
 * @returns {Number} evaluated polynomial
 */
 function evalpoly( c, x ) {
-	var p;
-	var i;
-	
-	i = c.length;
-	if ( i < 2 || x === 0 ) {
-		if ( i === 0 ) {
-			return 0;
-		}
-		return c[ 0 ];
-	}
-	i -= 1;
+  var p;
+  var i;
+  
+  i = c.length;
+  if ( i < 2 || x === 0 ) {
+    if ( i === 0 ) {
+      return 0;
+    }
+    return c[ 0 ];
+  }
+  i -= 1;
 
-	// Use Horner's rule (http://en.wikipedia.org/wiki/Horner's_method) to achieve efficient computation...
-	p = c[ i ]*x + c[ i-1 ];
-	i -= 2;
-	while ( i >= 0 ) {
-		p = p*x + c[ i ];
-		i -= 1;
-	}
-	return p;
+  // Use Horner's rule (http://en.wikipedia.org/wiki/Horner's_method) to achieve efficient computation...
+  p = c[ i ]*x + c[ i-1 ];
+  i -= 2;
+  while ( i >= 0 ) {
+    p = p*x + c[ i ];
+    i -= 1;
+  }
+  return p;
 } // end FUNCTION evalpoly()
 
 
@@ -2479,67 +2480,67 @@ module.exports = evalpoly;
 
 /**
 * FUNCTION: factory( c )
-*	Returns a function for evaluating a polynomial.
+* Returns a function for evaluating a polynomial.
 *
 * @param {Number[]|Int8Array|Uint8Array|Uint8ClampedArray|Int16Array|Uint16Array|Int32Array|Uint32Array|Float32Array|Float64Array} c - polynomial coefficients sorted in ascending degree
 * @returns {Function} function for evaluating a polynomial
 */
 function factory( c ) {
-	var f;
-	var n;
-	var m;
-	var i;
+  var f;
+  var n;
+  var m;
+  var i;
 
-	// Code generation. Start with the function definition...
-	f = 'return function evalpoly(x){';
+  // Code generation. Start with the function definition...
+  f = 'return function evalpoly(x){';
 
-	// Create the function body...
-	n = c.length;
+  // Create the function body...
+  n = c.length;
 
-	// If no coefficients, the function always returns 0...
-	if ( n === 0 ) {
-		f += 'return 0;';
-	}
-	// If only one coefficient, the function always returns that coefficient...
-	else if ( n === 1 ) {
-		f += 'return ' + c[ 0 ] + ';';
-	}
-	// If more than one coefficient, apply Horner's method...
-	else {
-		// If `x == 0`, return the first coefficient...
-		f += 'if(x===0){return ' + c[ 0 ] + ';}';
+  // If no coefficients, the function always returns 0...
+  if ( n === 0 ) {
+    f += 'return 0;';
+  }
+  // If only one coefficient, the function always returns that coefficient...
+  else if ( n === 1 ) {
+    f += 'return ' + c[ 0 ] + ';';
+  }
+  // If more than one coefficient, apply Horner's method...
+  else {
+    // If `x == 0`, return the first coefficient...
+    f += 'if(x===0){return ' + c[ 0 ] + ';}';
 
-		// Otherwise, evaluate the polynomial...
-		f += 'return ' + c[ 0 ];
-		m = n - 1;
-		for ( i = 1; i < n; i++ ) {
-			f += '+x*';
-			if ( i < m ) {
-				f += '(';
-			}
-			f += c[ i ];
-		}
-		// Close all the parentheses...
-		for ( i = 0; i < m-1; i++ ) {
-			f += ')';
-		}
-		f += ';';
-	}
-	// Close the function:
-	f += '}';
+    // Otherwise, evaluate the polynomial...
+    f += 'return ' + c[ 0 ];
+    m = n - 1;
+    for ( i = 1; i < n; i++ ) {
+      f += '+x*';
+      if ( i < m ) {
+        f += '(';
+      }
+      f += c[ i ];
+    }
+    // Close all the parentheses...
+    for ( i = 0; i < m-1; i++ ) {
+      f += ')';
+    }
+    f += ';';
+  }
+  // Close the function:
+  f += '}';
 
-	// Create the function in the global scope:
-	return ( new Function( f ) )();
+  // Create the function in the global scope:
+  return ( new Function( f ) )();
 
-	/**
-	* returns
-	*	function evalpoly( x ) {
-	*		if ( x === 0 ) {
-	*			return c[ 0 ];
-	*		}
-	*		return c[0]+x*(c[1]+x*(c[2]+x*(c[3]+...+x*(c[n-2]+x*c[n-1]))));
-	*	}
-	*/
+  /**
+  * returns
+  * function evalpoly( x ) {
+  *   if ( x === 0 ) {
+  *     return c[ 0 ];
+  *   }
+  *   return c[0]+x*(c[1]+x*(c[2]+x*(c[3]+...+x*(c[n-2]+x*c[n-1]))));
+  * }
+  */
 } // end FUNCTION factory()
 
 
@@ -2606,16 +2607,16 @@ var UINT32_VIEW = new Uint32Array( FLOAT64_VIEW.buffer );
 
 /**
 * FUNCTION: setLowWord( x, low )
-*	Sets the less significant 32 bits of a double-precision floating-point number.
+* Sets the less significant 32 bits of a double-precision floating-point number.
 *
 * @param {Number} x - double
 * @param {Number} low - unsigned 32-bit integer to replace the lower order word of `x`
 * @returns {Number} new double having the same higher order word as `x`
 */
 function setLowWord( x, low ) {
-	FLOAT64_VIEW[ 0 ] = x;
-	UINT32_VIEW[ LOW ] = ( low >>> 0 ); // identity bit shift to ensure integer
-	return FLOAT64_VIEW[ 0 ];
+  FLOAT64_VIEW[ 0 ] = x;
+  UINT32_VIEW[ LOW ] = ( low >>> 0 ); // identity bit shift to ensure integer
+  return FLOAT64_VIEW[ 0 ];
 } // end FUNCTION setLowWord()
 
 
@@ -2635,9 +2636,9 @@ var isLittleEndian = require( 'utils-is-little-endian' );
 
 var LOW;
 if ( isLittleEndian === true ) {
-	LOW = 0; // first index
+  LOW = 0; // first index
 } else {
-	LOW = 1; // second index
+  LOW = 1; // second index
 }
 
 
@@ -3602,8 +3603,8 @@ if ((typeof module) == 'object' && module.exports) {
 'use strict';
 
 var ctors = {
-	'uint16': Uint16Array,
-	'uint8': Uint8Array
+  'uint16': Uint16Array,
+  'uint8': Uint8Array
 };
 
 
@@ -3623,25 +3624,25 @@ var ctors = require( './ctors.js' );
 
 /**
 * FUNCTION: isLittleEndian()
-*	Returns a boolean indicating if an environment is little endian.
+* Returns a boolean indicating if an environment is little endian.
 *
 * @returns {Boolean} boolean indicating if an environment is little endian
 */
 function isLittleEndian() {
-	var uint16_view;
-	var uint8_view;
+  var uint16_view;
+  var uint8_view;
 
-	uint16_view = new ctors[ 'uint16' ]( 1 );
+  uint16_view = new ctors[ 'uint16' ]( 1 );
 
-	// Set the uint16 view to a value having distinguishable lower and higher order words.
-	// 4660 => 0x1234 => 0x12 0x34 => '00010010 00110100' => (0x12,0x34) == (18,52)
-	uint16_view[ 0 ] = 0x1234;
+  // Set the uint16 view to a value having distinguishable lower and higher order words.
+  // 4660 => 0x1234 => 0x12 0x34 => '00010010 00110100' => (0x12,0x34) == (18,52)
+  uint16_view[ 0 ] = 0x1234;
 
-	// Create a uint8 view on top of the uint16 buffer:
-	uint8_view = new ctors[ 'uint8' ]( uint16_view.buffer );
+  // Create a uint8 view on top of the uint16 buffer:
+  uint8_view = new ctors[ 'uint8' ]( uint16_view.buffer );
 
-	// If little endian, the least significant byte will be first...
-	return ( uint8_view[ 0 ] === 0x34 );
+  // If little endian, the least significant byte will be first...
+  return ( uint8_view[ 0 ] === 0x34 );
 } // end FUNCTION isLittleEndian()
 
 
